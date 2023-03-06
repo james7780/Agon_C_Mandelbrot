@@ -13,8 +13,8 @@
 #include "vdp.h"
 
 #define MAX_ITERATION	16	//20
-#define SCREEN_WIDTH	320
-#define SCREEN_HEIGHT	200
+#define SCREEN_WIDTH	512
+#define SCREEN_HEIGHT	384
 
 struct RGB_t
 {
@@ -47,8 +47,8 @@ int main(int argc, char * argv[]) {
 	UINT8 shade;
 	UINT8 keycode;
 	
-	// Set to 320 x 200 mode
-	vdp_mode(2);
+	// Set to 512x384 mode
+	vdp_mode(1);
 	vdp_cursorDisable();
 	vdp_cls();
 	
@@ -63,11 +63,11 @@ int main(int argc, char * argv[]) {
 	for (y = 0; y < SCREEN_HEIGHT / 2; y++)
 		{
 		// Scale y coord to mandel set { -1.12 ... +1.12)
-		y0 = (y - (SCREEN_HEIGHT / 2)) / 80.0;				// 200 / 2 / 1.12
+		y0 = (y - (SCREEN_HEIGHT / 2)) / 150.0;				// 200 / 2 / 1.12
 		for (x = 0; x < SCREEN_WIDTH; x++)
 			{
 			// Scale x coord to mandel set { -2.50 ... 0.0 } 
-			x0 = (x - (SCREEN_WIDTH / 2)) / 80.0 - 0.5;			// TODO - Fix!
+			x0 = (x - (SCREEN_WIDTH / 2)) / 150.0 - 0.5;			// TODO - Fix!
 
 			// Do mandel iteration
 			iteration = 0;
@@ -96,7 +96,7 @@ int main(int argc, char * argv[]) {
 			shade = (iteration & 0x07);
 			vdp_plotColour(colours[shade].r, colours[shade].g, colours[shade].b);
 			vdp_plotPoint(x, y);
-			vdp_plotPoint(x, 199 - y);
+			vdp_plotPoint(x, 383 - y);
 				
 			//keycode = getsysvar8bit(sysvar_keycode);
 			//keycode = getch();
