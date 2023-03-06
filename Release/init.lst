@@ -1,0 +1,213 @@
+Zilog eZ80 Macro Assembler Version 4.3 (19073001)06-Mar-23     12:27:21     page:   1
+
+
+PC     Object              I  Line    Source 
+                           A     1    ;
+                           A     2    ; Title:	init.asm - Initialisation Code
+                           A     3    ; Author:	Dean Belfield
+                           A     4    ; Created:	22/11/2022
+                           A     5    ; Last Updated: 25/11/2022
+                           A     6    ;
+                           A     7    ; Modinfo:
+                           A     8    ; 25/11/2022:	Added parameter parsing; now ac
+                           A     9    
+                           A    10    			SEGMENT CODE
+                           A    11    			
+                           A    12    			XREF	__low_bss
+                           A    13    			XREF	__len_bss
+                           A    14    			
+                           A    15    			XREF	_main
+                           A    16    			
+                           A    17    			XDEF	_putch
+                           A    18    			XDEF	_getch
+                           A    19    			
+                           A    20    			XDEF	__putch
+                           A    21    			XDEF	__getch
+                           A    22    		
+                           A    23    			.ASSUME	ADL = 1	
+                           A    24    
+       00000010            A    25    argv_ptrs_max:		EQU	16			; Maximum n
+                           A    26    
+                           A    27    ;
+                           A    28    ; Start in ADL mode
+                           A    29    ;
+                           A    30    
+000000 C3 4F 00 00         A    31    			JP	_start			; Jump to start
+                           A    32    			
+                           A    33    ;
+                           A    34    ; The header stuff
+                           A    35    ;
+                           A    36    ;_exec_name:		DB	"MBROT.BIN", 0		; T
+                           A    37    
+                           A    38    			ALIGN	64			; The executabl
+                           A    39    			
+000040 4D4F53              A    40    			DB	"MOS"			; Flag for MOS 
+000043 00                  A    41    			DB	00h			; MOS header versio
+000044 01                  A    42    			DB	01h			; Flag for run mode
+                           A    43    
+000045 4D42524F 542E4249   A    44    _exec_name:		DB	"MBROT.BIN", 0		; The e
+00004D 4E00 
+                           A    45    
+                           A    46    ;
+                           A    47    ; And the code follows on immediately after the
+                           A    48    ;
+00004F F5                  A    49    _start:			PUSH	AF			; Preserve 
+000050 C5                  A    50    			PUSH	BC
+000051 D5                  A    51    			PUSH	DE
+000052 DDE5                A    52    			PUSH	IX
+000054 FDE5                A    53    			PUSH	IY			; Need to prese
+                           A    54    ;			
+000056 E5                  A    55    			PUSH	HL			; Clear the RAM
+000057 CD 78 00 00         A    56    			CALL	_clear_bss
+00005B E1                  A    57    			POP	HL
+                           A    58    ;
+00005C DD21 00 00 00       A    59    			LD	IX, argv_ptrs		; The argv 
+000061 DDE5                A    60    			PUSH	IX			; Parameter 2: 
+000063 CD 97 00 00         A    61    			CALL	_parse_params		; Parse
+000067 0600                A    62    			LD	B, 0			; Clear B from 
+000069 C5                  A    63    			PUSH	BC			; Parameter 1: 
+00006A CD 00 00 00         A    64    			CALL	_main			; int main(
+00006E D1                  A    65    			POP	DE			; Balance the stack
+00006F D1                  A    66    			POP	DE
+                           A    67    
+000070 FDE1                A    68    			POP	IY			; Restore registers
+000072 DDE1                A    69    			POP	IX
+000074 D1                  A    70    			POP	DE
+000075 C1                  A    71    			POP 	BC
+000076 F1                  A    72    			POP	AF
+000077 C9                  A    73    			RET
+                           A    74    			
+                           A    75    ; Clear the memory
+                           A    76    ;
+000078 01 00 00 00         A    77    _clear_bss:		LD	BC, __len_bss		; Check
+00007C 3E 00               A    78    			LD	a, __len_bss >> 16
+00007E B1                  A    79    			OR	A, C
+00007F B0                  A    80    			OR	A, B
+000080 C8                  A    81    			RET	Z			; BSS is zero-lengt
+000081 AF                  A    82    			XOR	A, A
+000082 32 00 00 00         A    83    			LD 	(__low_bss), A
+000086 ED62                A    84    			SBC	HL, HL			; HL = 0
+000088 0B                  A    85    			DEC	BC			; 1st byte's taken 
+000089 ED42                A    86    			SBC	HL, BC
+00008B C8                  A    87    			RET	Z		  	; Just 1 byte ...
+00008C 21 00 00 00         A    88    			LD	HL, __low_bss		; Reset HL
+000090 11 01 00 00         A    89    			LD	DE, __low_bss + 1	; [DE] = bs
+000094 EDB0                A    90    			LDIR				; Clear this se
+000096 C9                  A    91    			RET
+                           A    92    			
+                           A    93    ; Parse the parameter string into a C array
+                           A    94    ; Parameters
+                           A    95    ; - HL: Address of parameter string
+                           A    96    ; - IX: Address for array pointer storage
+                           A    97    ; Returns:
+                           A    98    ; -  C: Number of parameters parsed
+                           A    99    ;
+000097 01 45 00 00         A   100    _parse_params:		LD	BC, _exec_name
+00009B DD0F00              A   101    			LD	(IX+0), BC		; ARGV[0] = the
+00009E DD23                A   102    			INC	IX
+0000A0 DD23                A   103    			INC	IX
+0000A2 DD23                A   104    			INC	IX
+0000A4 CD DF 00 00         A   105    			CALL	_skip_spaces		; Skip 
+                           A   106    ;
+0000A8 01010000            A   107    			LD	BC, 1			; C: ARGC = 1 -
+0000AC 060F                A   108    			LD	B, argv_ptrs_max - 1	; B: Ma
+                           A   109    ;
+0000AE                     A   110    _parse_params_1:	
+0000AE C5                  A   111    			PUSH	BC			; Stack ARGC	
+0000AF E5                  A   112    			PUSH	HL			; Stack start a
+0000B0 CD D0 00 00         A   113    			CALL	_get_token		; Get the n
+0000B4 79                  A   114    			LD	A, C			; A: Length of 
+0000B5 D1                  A   115    			POP	DE			; Start address of 
+0000B6 C1                  A   116    			POP	BC			; ARGC
+0000B7 B7                  A   117    			OR	A			; Check for A=0 (no
+0000B8 C8                  A   118    			RET	Z
+                           A   119    ;
+0000B9 DD1F00              A   120    			LD	(IX+0), DE		; Store the poi
+0000BC E5                  A   121    			PUSH	HL			; DE=HL
+0000BD D1                  A   122    			POP	DE
+0000BE CD DF 00 00         A   123    			CALL	_skip_spaces		; And s
+0000C2 AF                  A   124    			XOR	A
+0000C3 12                  A   125    			LD	(DE), A			; Zero-terminat
+0000C4 DD23                A   126    			INC	IX
+0000C6 DD23                A   127    			INC	IX
+0000C8 DD23                A   128    			INC	IX			; Advance to next p
+0000CA 0C                  A   129    			INC	C			; Increment ARGC
+0000CB 79                  A   130    			LD	A, C			; Check for C >
+0000CC B8                  A   131    			CP	B
+0000CD 38 DF               A   132    			JR	C, _parse_params_1	; And loop
+0000CF C9                  A   133    			RET
+                           A   134    
+                           A   135    ; Get the next token
+                           A   136    ; Parameters:
+                           A   137    ; - HL: Address of parameter string
+                           A   138    ; Returns:
+                           A   139    ; - HL: Address of first character after token
+                           A   140    ; -  C: Length of token (in characters)
+                           A   141    ;
+0000D0 0E00                A   142    _get_token:		LD	C, 0			; Initialis
+0000D2 7E                  A   143    $$:			LD	A, (HL)			; Get the chara
+0000D3 B7                  A   144    			OR	A			; Exit if 0 (end of
+0000D4 C8                  A   145    			RET 	Z
+0000D5 FE0D                A   146    			CP	13			; Exit if CR (end o
+0000D7 C8                  A   147    			RET	Z
+0000D8 FE20                A   148    			CP	' '			; Exit if space (en
+0000DA C8                  A   149    			RET	Z
+0000DB 23                  A   150    			INC	HL			; Advance to next c
+0000DC 0C                  A   151    			INC 	C			; Increment len
+0000DD 18 F3               A   152    			JR	$B
+                           A   153    	
+                           A   154    ; Skip spaces in the parameter string
+                           A   155    ; Parameters:
+                           A   156    ; - HL: Address of parameter string
+                           A   157    ; Returns:
+                           A   158    ; - HL: Address of next none-space character
+                           A   159    ;    F: Z if at end of string, otherwise NZ if 
+                           A   160    ;
+0000DF 7E                  A   161    _skip_spaces:		LD	A, (HL)			; Get t
+0000E0 FE20                A   162    			CP	' '			; Exit if not space
+0000E2 C0                  A   163    			RET	NZ
+0000E3 23                  A   164    			INC	HL			; Advance to next c
+0000E4 18 F9               A   165    			JR	_skip_spaces		; Increment
+                           A   166    
+                           A   167    ; Write a character out to the ESP32
+                           A   168    ; int putch(int ch)
+                           A   169    ;
+0000E6                     A   170    __putch:
+0000E6 FDE5                A   171    _putch:			PUSH	IY
+0000E8 FD210000 00         A   172    			LD	IY, 0
+0000ED FD39                A   173    			ADD	IY, SP
+0000EF FD7E06              A   174    			LD	A, (IY+6)
+0000F2 5BD7                A   175    			RST.LIL	10h	
+0000F4 21000000            A   176    			LD	HL, 0
+0000F8 6F                  A   177    			LD	L, A
+0000F9 FDF9                A   178    			LD	SP, IY
+0000FB FDE1                A   179    			POP	IY				
+0000FD C9                  A   180    			RET
+                           A   181    
+                           A   182    ; Read a character in from the ESP32
+                           A   183    ; int getch(void)
+                           A   184    ;
+0000FE                     A   185    __getch:
+0000FE 21000000            A   186    _getch:			LD	HL, 0
+000102 C9                  A   187    			RET
+                           A   188    
+                           A   189    			SEGMENT DATA
+                           A   190    
+                           A   191    
+                           A   192    ; Storage for the argv array pointers
+                           A   193    ;
+000000 000000 000000       A   194    argv_ptrs:		BLKP	argv_ptrs_max, 0
+000006 000000 000000 
+00000C 000000 000000 
+000012 000000 000000 
+000018 000000 000000 
+00001E 000000 000000 
+000024 000000 000000 
+00002A 000000 000000 
+                           A   195    			
+                           A   196    			END
+
+
+Errors: 0
+Warnings: 0
+Lines Assembled: 197

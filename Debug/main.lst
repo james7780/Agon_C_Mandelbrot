@@ -1,0 +1,609 @@
+Zilog eZ80 Macro Assembler Version 4.3 (19073001) RELISTED06-Mar-23     12:35:48     page:   1
+
+
+PC     Object              I  Line    Source 
+                           A     1    ; Zilog eZ80 ANSI C Compiler Release 3.4
+                           A     2    ; -noglobalopt -nolocalcse -optsize -nomodsect 
+                           A     3    ; -padbranch -debug -peephole -const=ROM 
+                           A     4    	FILE	"..\main.c"
+                           A     5    	.assume ADL=1
+                           A     6    .DEBUG "C"
+                           A     7    .PADBRANCH CCODE
+                           A     8    	SEGMENT CODE
+                           A     9    .BEGREC "fmt_type",19
+                           A    10    .DEFINE "status"
+                           A    11    .VALUE 0
+                           A    12    .CLASS 8
+                           A    13    .TYPE 12
+                           A    14    .ENDEF
+                           A    15    .DEFINE "flags"
+                           A    16    .VALUE 1
+                           A    17    .CLASS 8
+                           A    18    .TYPE 12
+                           A    19    .ENDEF
+                           A    20    .DEFINE "size"
+                           A    21    .VALUE 2
+                           A    22    .CLASS 8
+                           A    23    .TYPE 2
+                           A    24    .ENDEF
+                           A    25    .DEFINE "chr"
+                           A    26    .VALUE 3
+                           A    27    .CLASS 8
+                           A    28    .TYPE 2
+                           A    29    .ENDEF
+                           A    30    .DEFINE "type"
+                           A    31    .VALUE 4
+                           A    32    .CLASS 8
+                           A    33    .TYPE 2
+                           A    34    .ENDEF
+                           A    35    .DEFINE "field_width"
+                           A    36    .VALUE 5
+                           A    37    .CLASS 8
+                           A    38    .TYPE 2
+                           A    39    .ENDEF
+                           A    40    .DEFINE "precision"
+                           A    41    .VALUE 6
+                           A    42    .CLASS 8
+                           A    43    .TYPE 2
+                           A    44    .ENDEF
+                           A    45    .DEFINE "set_begin"
+                           A    46    .VALUE 7
+                           A    47    .CLASS 8
+                           A    48    .TYPE 34
+                           A    49    .ENDEF
+                           A    50    .DEFINE "set_end"
+                           A    51    .VALUE 10
+                           A    52    .CLASS 8
+                           A    53    .TYPE 34
+                           A    54    .ENDEF
+                           A    55    .DEFINE "pad_whole"
+                           A    56    .VALUE 13
+                           A    57    .CLASS 8
+                           A    58    .TYPE 12
+                           A    59    .ENDEF
+                           A    60    .DEFINE "pad_pre_fract"
+                           A    61    .VALUE 14
+                           A    62    .CLASS 8
+                           A    63    .TYPE 12
+                           A    64    .ENDEF
+                           A    65    .DEFINE "pad_post_fract"
+                           A    66    .VALUE 15
+                           A    67    .CLASS 8
+                           A    68    .TYPE 12
+                           A    69    .ENDEF
+                           A    70    .DEFINE "pad_at"
+                           A    71    .VALUE 16
+                           A    72    .CLASS 8
+                           A    73    .TYPE 34
+                           A    74    .ENDEF
+                           A    75    .ENDREC "fmt_type"
+                           A    76    .BEGREC "flt_info",12
+                           A    77    .DEFINE "flags"
+                           A    78    .VALUE 0
+                           A    79    .CLASS 8
+                           A    80    .TYPE 12
+                           A    81    .ENDEF
+                           A    82    .DEFINE "exp"
+                           A    83    .VALUE 1
+                           A    84    .CLASS 8
+                           A    85    .TYPE 2
+                           A    86    .ENDEF
+                           A    87    .DEFINE "digits"
+                           A    88    .VALUE 2
+                           A    89    .CLASS 8
+                           A    90    .DIM 10
+                           A    91    .TYPE 108
+                           A    92    .ENDEF
+                           A    93    .ENDREC "flt_info"
+                           A    94    ;    1	/*
+                           A    95    ;    2	 * Title:			C MAndelbrot exampl
+                           A    96    ;    3	 * Author:			James Higgs (Jum Hi
+                           A    97    ;    4	 * Created:			2023
+                           A    98    ;    5	 * Last Updated:		2023-03-06
+                           A    99    ;    6	 *
+                           A   100    ;    7	 * Modinfo:
+                           A   101    ;    8	 */
+                           A   102    ;    9	 
+                           A   103    ;   10	#include <stdio.h>
+                           A   104    ;   11	#include <ctype.h>
+                           A   105    ;   12	#include "mos-interface.h"
+                           A   106    ;   13	#include "vdp.h"
+                           A   107    ;   14	
+                           A   108    ;   15	#define MAX_ITERATION	20
+                           A   109    ;   16	#define SCREEN_WIDTH		320
+                           A   110    ;   17	#define SCREEN_HEIGHT	200
+                           A   111    ;   18	
+                           A   112    ;   19	/// @param[in] argc			Argument co
+                           A   113    ;   20	/// @param[in] argv			Pointer to 
+                           A   114    ;   21	int main(int argc, char * argv[]) {
+040103                     A   115    _main:
+                           A   116    .DEFINE "_main"
+                           A   117    
+                           A   118    .VALUE _main
+                           A   119    
+                           A   120    .CLASS 2
+                           A   121    
+                           A   122    .TYPE 68
+                           A   123    
+                           A   124    .ENDEF
+                           A   125    
+                           A   126    .BEGFUNC "main",21,"_main"
+                           A   127    
+                           A   128    .LINE 21
+                           A   129    
+                           A   130    .DEFINE "argc"
+                           A   131    
+                           A   132    .CLASS 65
+                           A   133    
+                           A   134    .VALUE 6
+                           A   135    
+                           A   136    .TYPE 4
+                           A   137    
+                           A   138    .ENDEF
+                           A   139    
+                           A   140    .DEFINE "argv"
+                           A   141    
+                           A   142    .CLASS 65
+                           A   143    
+                           A   144    .VALUE 9
+                           A   145    
+                           A   146    .TYPE 290
+                           A   147    
+                           A   148    .ENDEF
+                           A   149    
+                           A   150    .DEFINE "iteration"
+                           A   151    
+                           A   152    .CLASS 65
+                           A   153    
+                           A   154    .VALUE -1
+                           A   155    
+                           A   156    .TYPE 12
+                           A   157    
+                           A   158    .ENDEF
+                           A   159    
+                           A   160    .DEFINE "y"
+                           A   161    
+                           A   162    .CLASS 65
+                           A   163    
+                           A   164    .VALUE -4
+                           A   165    
+                           A   166    .TYPE 4
+                           A   167    
+                           A   168    .ENDEF
+                           A   169    
+                           A   170    .DEFINE "x"
+                           A   171    
+                           A   172    .CLASS 65
+                           A   173    
+                           A   174    .VALUE -7
+                           A   175    
+                           A   176    .TYPE 4
+                           A   177    
+                           A   178    .ENDEF
+                           A   179    
+                           A   180    .DEFINE "a"
+                           A   181    
+                           A   182    .CLASS 65
+                           A   183    
+                           A   184    .VALUE -11
+                           A   185    
+                           A   186    .TYPE 6
+                           A   187    
+                           A   188    .ENDEF
+                           A   189    
+                           A   190    .DEFINE "b"
+                           A   191    
+                           A   192    .CLASS 65
+                           A   193    
+                           A   194    .VALUE -15
+                           A   195    
+                           A   196    .TYPE 6
+                           A   197    
+                           A   198    .ENDEF
+                           A   199    
+                           A   200    .DEFINE "shade"
+                           A   201    
+                           A   202    .CLASS 65
+                           A   203    
+                           A   204    .VALUE -16
+                           A   205    
+                           A   206    .TYPE 12
+                           A   207    
+                           A   208    .ENDEF
+                           A   209    
+                           A   210    .DEFINE "keycode"
+                           A   211    
+                           A   212    .CLASS 65
+                           A   213    
+                           A   214    .VALUE -17
+                           A   215    
+                           A   216    .TYPE 12
+                           A   217    
+                           A   218    .ENDEF
+                           A   219    
+                           A   220    .DEFINE "xtemp"
+                           A   221    
+                           A   222    .CLASS 65
+                           A   223    
+                           A   224    .VALUE -21
+                           A   225    
+                           A   226    .TYPE 6
+                           A   227    
+                           A   228    .ENDEF
+                           A   229    
+                           A   230    .DEFINE "y0"
+                           A   231    
+                           A   232    .CLASS 65
+                           A   233    
+                           A   234    .VALUE -25
+                           A   235    
+                           A   236    .TYPE 6
+                           A   237    
+                           A   238    .ENDEF
+                           A   239    
+                           A   240    .DEFINE "x0"
+                           A   241    
+                           A   242    .CLASS 65
+                           A   243    
+                           A   244    .VALUE -29
+                           A   245    
+                           A   246    .TYPE 6
+                           A   247    
+                           A   248    .ENDEF
+                           A   249    
+040103 DDE5                A   250    	PUSH	IX
+040105 DD210000 00         A   251    	LD	IX,0
+04010A DD39                A   252    	ADD	IX,SP
+04010C ED22DB              A   253    	LEA	HL,IX+%FFFFFFDB
+04010F F9                  A   254    	LD	SP,HL
+                           A   255    ;   22		int	x, y;
+                           A   256    ;   23		float x0, y0;
+                           A   257    ;   24		UINT8 iteration;
+                           A   258    ;   25		float a, b, xtemp;
+                           A   259    ;   26		UINT8 shade;
+                           A   260    ;   27		UINT8 keycode;
+                           A   261    ;   28		
+                           A   262    ;   29		// Set to 320 x 200 mode
+                           A   263    ;   30		vdp_mode(2);
+                           A   264    .LINE 30
+                           A   265    
+040110 01020000            A   266    	LD	BC,2
+040114 C5                  A   267    	PUSH	BC
+040115 CD BE 03 04         A   268    	CALL	_vdp_mode
+040119 C1                  A   269    	POP	BC
+                           A   270    ;   31		vdp_cursorDisable();
+                           A   271    .LINE 31
+                           A   272    
+04011A CD 87 0D 04         A   273    	CALL	_vdp_cursorDisable
+                           A   274    ;   32		vdp_cls();
+                           A   275    .LINE 32
+                           A   276    
+04011E CD E3 03 04         A   277    	CALL	_vdp_cls
+040122 18 16 00            A   278    	JR	L_12
+                           A   279    ;   33		
+                           A   280    ;   34	/* 	printf("Hello World\n\r");
+                           A   281    ;   35		printf("Arguments:\n\r");
+                           A   282    ;   36		printf("- argc: %d\n\r", argc);
+                           A   283    ;   37		
+                           A   284    ;   38		for(i = 0; i < argc; i++) {
+                           A   285    ;   39			printf("- argv[%d]: %s\n\r", i,
+                           A   286    ;   40		} */
+                           A   287    ;   41	
+                           A   288    ;   42		for (y = 0; y < SCREEN_HEIGHT; y++)
+040125                     A   289    L_13:
+                           A   290    .LINE 42
+                           A   291    
+040125 01C80000            A   292    	LD	BC,200
+040129 DD27FC              A   293    	LD	HL,(IX+%FFFFFFFC)
+04012C B7                  A   294    	OR	A,A
+04012D ED42                A   295    	SBC	HL,BC
+04012F CD 00 0F 04         A   296    	CALL	__setflag
+040133 FA 45 01 04         A   297    	JP	M,L_15
+040137 C3 E7 02 04         A   298    	JR	L_16
+04013B                     A   299    L_12:
+04013B 01000000            A   300    	LD	BC,0
+04013F DD0FFC              A   301    	LD	(IX+%FFFFFFFC),BC
+040142 18 E0 00            A   302    	JR	L_13
+040145                     A   303    L_15:
+                           A   304    ;   43			{
+                           A   305    ;   44			// Scale y coord to mandel set 
+                           A   306    ;   45			y0 = (y - (SCREEN_HEIGHT / 2)) 
+                           A   307    .LINE 45
+                           A   308    
+040145 DD31FC              A   309    	LD	IY,(IX+%FFFFFFFC)
+040148 ED039C              A   310    	LEA	BC,IY+%FFFFFF9C
+04014B CD 09 12 04         A   311    	CALL	__itol
+04014F CD 47 11 04         A   312    	CALL	__ltof
+040153 214792B2            A   313    	LD	HL,11702855
+040157 1E42                A   314    	LD	E,%42
+040159 CD 82 10 04         A   315    	CALL	__fdiv
+04015D DD0FE7              A   316    	LD	(IX+%FFFFFFE7),BC
+040160 DD77EA              A   317    	LD	(IX+%FFFFFFEA),A
+040163 18 16 00            A   318    	JR	L_8
+                           A   319    ;   46			for (x = 0; x < SCREEN_WIDTH; x
+040166                     A   320    L_9:
+                           A   321    .LINE 46
+                           A   322    
+040166 01400100            A   323    	LD	BC,320
+04016A DD27F9              A   324    	LD	HL,(IX+%FFFFFFF9)
+04016D B7                  A   325    	OR	A,A
+04016E ED42                A   326    	SBC	HL,BC
+040170 CD 00 0F 04         A   327    	CALL	__setflag
+040174 FA 86 01 04         A   328    	JP	M,L_11
+040178 C3 DB 02 04         A   329    	JR	L_14
+04017C                     A   330    L_8:
+04017C 01000000            A   331    	LD	BC,0
+040180 DD0FF9              A   332    	LD	(IX+%FFFFFFF9),BC
+040183 18 E0 00            A   333    	JR	L_9
+040186                     A   334    L_11:
+                           A   335    ;   47				{
+                           A   336    ;   48				// Scale x coord to mandel 
+                           A   337    ;   49				x0 = (x - (SCREEN_WIDTH / 2
+                           A   338    .LINE 49
+                           A   339    
+040186 0160FFFF            A   340    	LD	BC,16777056
+04018A DD27F9              A   341    	LD	HL,(IX+%FFFFFFF9)
+04018D 09                  A   342    	ADD	HL,BC
+04018E E5C1                A   343    	LD	BC,HL
+040190 CD 09 12 04         A   344    	CALL	__itol
+040194 CD 47 11 04         A   345    	CALL	__ltof
+040198 214792B2            A   346    	LD	HL,11702855
+04019C 1E42                A   347    	LD	E,%42
+04019E CD 82 10 04         A   348    	CALL	__fdiv
+0401A2 DD0FE3              A   349    	LD	(IX+%FFFFFFE3),BC
+0401A5 DD77E6              A   350    	LD	(IX+%FFFFFFE6),A
+                           A   351    ;   50	
+                           A   352    ;   51				// Do mandel iteration
+                           A   353    ;   52				iteration = 0;
+                           A   354    .LINE 52
+                           A   355    
+0401A8 DD36FF00            A   356    	LD	(IX+%FFFFFFFF),%0
+                           A   357    ;   53				a = 0;
+                           A   358    .LINE 53
+                           A   359    
+0401AC 01000000            A   360    	LD	BC,0
+0401B0 AF                  A   361    	XOR	A,A
+0401B1 DD0FF5              A   362    	LD	(IX+%FFFFFFF5),BC
+0401B4 DD77F8              A   363    	LD	(IX+%FFFFFFF8),A
+                           A   364    ;   54				b = 0;
+                           A   365    .LINE 54
+                           A   366    
+0401B7 01000000            A   367    	LD	BC,0
+0401BB AF                  A   368    	XOR	A,A
+0401BC DD0FF1              A   369    	LD	(IX+%FFFFFFF1),BC
+0401BF DD77F4              A   370    	LD	(IX+%FFFFFFF4),A
+                           A   371    ;   55				while ((a * a + b * b) <= (
+0401C2                     A   372    L_4:
+                           A   373    .LINE 55
+                           A   374    
+0401C2 DD27F5              A   375    	LD	HL,(IX+%FFFFFFF5)
+0401C5 DD5EF8              A   376    	LD	E,(IX+%FFFFFFF8)
+0401C8 DD07F5              A   377    	LD	BC,(IX+%FFFFFFF5)
+0401CB DD7EF8              A   378    	LD	A,(IX+%FFFFFFF8)
+0401CE CD 45 0F 04         A   379    	CALL	__fmul
+0401D2 DD0FDC              A   380    	LD	(IX+%FFFFFFDC),BC
+0401D5 DD77DB              A   381    	LD	(IX+%FFFFFFDB),A
+0401D8 DD27F1              A   382    	LD	HL,(IX+%FFFFFFF1)
+0401DB DD5EF4              A   383    	LD	E,(IX+%FFFFFFF4)
+0401DE DD07F1              A   384    	LD	BC,(IX+%FFFFFFF1)
+0401E1 DD7EF4              A   385    	LD	A,(IX+%FFFFFFF4)
+0401E4 CD 45 0F 04         A   386    	CALL	__fmul
+0401E8 5F                  A   387    	LD	E,A
+0401E9 C5E1                A   388    	LD	HL,BC
+0401EB DD7EDB              A   389    	LD	A,(IX+%FFFFFFDB)
+0401EE DD07DC              A   390    	LD	BC,(IX+%FFFFFFDC)
+0401F1 CD 43 12 04         A   391    	CALL	__fadd
+0401F5 21000080            A   392    	LD	HL,8388608
+0401F9 1E40                A   393    	LD	E,%40
+0401FB CD 10 12 04         A   394    	CALL	__fcmp
+0401FF FA 8D 02 04         A   395    	JP	M,L_6
+040203 DD7EFF              A   396    	LD	A,(IX+%FFFFFFFF)
+040206 FE14                A   397    	CP	A,%14
+040208 D2 8D 02 04 00      A   398    	JR	NC,L_6
+                           A   399    ;   56					{
+                           A   400    ;   57					xtemp = a * a - b * b +
+                           A   401    .LINE 57
+                           A   402    
+04020D DD27F5              A   403    	LD	HL,(IX+%FFFFFFF5)
+040210 DD5EF8              A   404    	LD	E,(IX+%FFFFFFF8)
+040213 DD07F5              A   405    	LD	BC,(IX+%FFFFFFF5)
+040216 DD7EF8              A   406    	LD	A,(IX+%FFFFFFF8)
+040219 CD 45 0F 04         A   407    	CALL	__fmul
+04021D DD0FE0              A   408    	LD	(IX+%FFFFFFE0),BC
+040220 DD77DF              A   409    	LD	(IX+%FFFFFFDF),A
+040223 DD27F1              A   410    	LD	HL,(IX+%FFFFFFF1)
+040226 DD5EF4              A   411    	LD	E,(IX+%FFFFFFF4)
+040229 DD07F1              A   412    	LD	BC,(IX+%FFFFFFF1)
+04022C DD7EF4              A   413    	LD	A,(IX+%FFFFFFF4)
+04022F CD 45 0F 04         A   414    	CALL	__fmul
+040233 5F                  A   415    	LD	E,A
+040234 C5E1                A   416    	LD	HL,BC
+040236 DD7EDF              A   417    	LD	A,(IX+%FFFFFFDF)
+040239 DD07E0              A   418    	LD	BC,(IX+%FFFFFFE0)
+04023C CD 34 0F 04         A   419    	CALL	__fsub
+040240 DD27E3              A   420    	LD	HL,(IX+%FFFFFFE3)
+040243 DD5EE6              A   421    	LD	E,(IX+%FFFFFFE6)
+040246 CD 43 12 04         A   422    	CALL	__fadd
+04024A DD0FEB              A   423    	LD	(IX+%FFFFFFEB),BC
+04024D DD77EE              A   424    	LD	(IX+%FFFFFFEE),A
+                           A   425    ;   58					b = 2 * a * b + y0;
+                           A   426    .LINE 58
+                           A   427    
+040250 B7                  A   428    	OR	A,A
+040251 ED62                A   429    	SBC	HL,HL
+040253 1E40                A   430    	LD	E,%40
+040255 DD07F5              A   431    	LD	BC,(IX+%FFFFFFF5)
+040258 DD7EF8              A   432    	LD	A,(IX+%FFFFFFF8)
+04025B CD 45 0F 04         A   433    	CALL	__fmul
+04025F DD27F1              A   434    	LD	HL,(IX+%FFFFFFF1)
+040262 DD5EF4              A   435    	LD	E,(IX+%FFFFFFF4)
+040265 CD 45 0F 04         A   436    	CALL	__fmul
+040269 DD27E7              A   437    	LD	HL,(IX+%FFFFFFE7)
+04026C DD5EEA              A   438    	LD	E,(IX+%FFFFFFEA)
+04026F CD 43 12 04         A   439    	CALL	__fadd
+040273 DD0FF1              A   440    	LD	(IX+%FFFFFFF1),BC
+040276 DD77F4              A   441    	LD	(IX+%FFFFFFF4),A
+                           A   442    ;   59					a = xtemp;
+                           A   443    .LINE 59
+                           A   444    
+040279 DD07EB              A   445    	LD	BC,(IX+%FFFFFFEB)
+04027C DD7EEE              A   446    	LD	A,(IX+%FFFFFFEE)
+04027F DD0FF5              A   447    	LD	(IX+%FFFFFFF5),BC
+040282 DD77F8              A   448    	LD	(IX+%FFFFFFF8),A
+                           A   449    ;   60					iteration++;
+                           A   450    .LINE 60
+                           A   451    
+040285 DD34FF              A   452    	INC	(IX+%FFFFFFFF)
+                           A   453    ;   61					}
+                           A   454    .LINE 61
+                           A   455    
+040288 C3 C2 01 04 00      A   456    	JR	L_4
+04028D                     A   457    L_6:
+                           A   458    ;   62	
+                           A   459    ;   63				shade = iteration * 10;
+                           A   460    .LINE 63
+                           A   461    
+04028D 060A                A   462    	LD	B,%A
+04028F DD4EFF              A   463    	LD	C,(IX+%FFFFFFFF)
+040292 ED4C                A   464    	MLT	BC
+040294 DD71F0              A   465    	LD	(IX+%FFFFFFF0),C
+                           A   466    ;   64				vdp_plotColour(shade, shade
+                           A   467    .LINE 64
+                           A   468    
+040297 DD4EF0              A   469    	LD	C,(IX+%FFFFFFF0)
+04029A 0600                A   470    	LD	B,%0
+04029C C5                  A   471    	PUSH	BC
+04029D DD4EF0              A   472    	LD	C,(IX+%FFFFFFF0)
+0402A0 C5                  A   473    	PUSH	BC
+0402A1 DD4EF0              A   474    	LD	C,(IX+%FFFFFFF0)
+0402A4 C5                  A   475    	PUSH	BC
+0402A5 CD 26 05 04         A   476    	CALL	_vdp_plotColour
+0402A9 C1                  A   477    	POP	BC
+0402AA C1                  A   478    	POP	BC
+0402AB C1                  A   479    	POP	BC
+                           A   480    ;   65				vdp_plotPoint(x, y);
+                           A   481    .LINE 65
+                           A   482    
+0402AC DD07FC              A   483    	LD	BC,(IX+%FFFFFFFC)
+0402AF C5                  A   484    	PUSH	BC
+0402B0 DD07F9              A   485    	LD	BC,(IX+%FFFFFFF9)
+0402B3 C5                  A   486    	PUSH	BC
+0402B4 CD 10 06 04         A   487    	CALL	_vdp_plotPoint
+0402B8 C1                  A   488    	POP	BC
+0402B9 C1                  A   489    	POP	BC
+                           A   490    ;   66					
+                           A   491    ;   67				keycode = getsysvar8bit(sys
+                           A   492    .LINE 67
+                           A   493    
+0402BA 01050000            A   494    	LD	BC,5
+0402BE C5                  A   495    	PUSH	BC
+0402BF CD 6A 0E 04         A   496    	CALL	_getsysvar8bit
+0402C3 C1                  A   497    	POP	BC
+0402C4 DD77EF              A   498    	LD	(IX+%FFFFFFEF),A
+                           A   499    ;   68				//keycode = getch();
+                           A   500    ;   69				//printf("%d\n\r", keycode)
+                           A   501    ;   70				if (27 == keycode)
+                           A   502    .LINE 70
+                           A   503    
+0402C7 DD7EEF              A   504    	LD	A,(IX+%FFFFFFEF)
+0402CA FE1B                A   505    	CP	A,%1B
+0402CC 28 0C 00            A   506    	JR	Z,L_14
+                           A   507    ;   71					break;
+                           A   508    .LINE 71
+                           A   509    
+                           A   510    ;   72				}
+                           A   511    .LINE 72
+                           A   512    
+0402CF DD07F9              A   513    	LD	BC,(IX+%FFFFFFF9)
+0402D2 03                  A   514    	INC	BC
+0402D3 DD0FF9              A   515    	LD	(IX+%FFFFFFF9),BC
+0402D6 C3 66 01 04 00      A   516    	JR	L_9
+                           A   517    ;   73			}
+0402DB                     A   518    L_14:
+                           A   519    .LINE 73
+                           A   520    
+0402DB DD07FC              A   521    	LD	BC,(IX+%FFFFFFFC)
+0402DE 03                  A   522    	INC	BC
+0402DF DD0FFC              A   523    	LD	(IX+%FFFFFFFC),BC
+0402E2 C3 25 01 04 00      A   524    	JR	L_13
+0402E7                     A   525    L_16:
+                           A   526    ;   74		
+                           A   527    ;   75		vdp_cursorEnable();
+                           A   528    .LINE 75
+                           A   529    
+0402E7 CD B3 0D 04         A   530    	CALL	_vdp_cursorEnable
+                           A   531    ;   76		
+                           A   532    ;   77		vdp_mode(0);
+                           A   533    .LINE 77
+                           A   534    
+0402EB 01000000            A   535    	LD	BC,0
+0402EF C5                  A   536    	PUSH	BC
+0402F0 CD BE 03 04         A   537    	CALL	_vdp_mode
+0402F4 C1                  A   538    	POP	BC
+                           A   539    ;   78		vdp_cls();
+                           A   540    .LINE 78
+                           A   541    
+0402F5 CD E3 03 04         A   542    	CALL	_vdp_cls
+                           A   543    ;   79		
+                           A   544    ;   80		return 0;
+                           A   545    .LINE 80
+                           A   546    
+0402F9 B7                  A   547    	OR	A,A
+0402FA ED62                A   548    	SBC	HL,HL
+                           A   549    .LINE 81
+                           A   550    
+0402FC DDF9                A   551    	LD	SP,IX
+0402FE DDE1                A   552    	POP	IX
+040300 C9                  A   553    	RET	
+                           A   554    
+                           A   555    
+                           A   556    ;**************************** _main ***********
+                           A   557    ;Name                         Addr/Register   S
+                           A   558    ;_vdp_cursorEnable                   IMPORT  --
+                           A   559    ;_getsysvar8bit                      IMPORT  --
+                           A   560    ;_vdp_plotPoint                      IMPORT  --
+                           A   561    ;_vdp_plotColour                     IMPORT  --
+                           A   562    ;_vdp_cls                            IMPORT  --
+                           A   563    ;_vdp_cursorDisable                  IMPORT  --
+                           A   564    ;_vdp_mode                           IMPORT  --
+                           A   565    ;x0                                   IX-29    
+                           A   566    ;y0                                   IX-25    
+                           A   567    ;xtemp                                IX-21    
+                           A   568    ;keycode                              IX-17    
+                           A   569    ;shade                                IX-16    
+                           A   570    ;b                                    IX-15    
+                           A   571    ;a                                    IX-11    
+                           A   572    ;x                                     IX-7    
+                           A   573    ;y                                     IX-4    
+                           A   574    ;iteration                             IX-1    
+                           A   575    ;argv                                  IX+9    
+                           A   576    ;argc                                  IX+6    
+                           A   577    
+                           A   578    
+                           A   579    ; Stack Frame Size: 49 (bytes)
+                           A   580    ;       Spill Code: 0 (instruction)
+                           A   581    
+                           A   582    
+                           A   583    .ENDFUNC "main",81,"_main"
+                           A   584    	XREF _vdp_plotPoint:ROM
+                           A   585    	XREF _vdp_plotColour:ROM
+                           A   586    	XREF _vdp_cursorEnable:ROM
+                           A   587    	XREF _vdp_cursorDisable:ROM
+                           A   588    	XREF _vdp_cls:ROM
+                           A   589    	XREF _vdp_mode:ROM
+                           A   590    	XREF _getsysvar8bit:ROM
+                           A   591    	XREF __fadd:ROM
+                           A   592    	XREF __fsub:ROM
+                           A   593    	XREF __fmul:ROM
+                           A   594    	XREF __fdiv:ROM
+                           A   595    	XREF __fcmp:ROM
+                           A   596    	XREF __ltof:ROM
+                           A   597    	XREF __itol:ROM
+                           A   598    	XREF __setflag:ROM
+                           A   599    	XDEF _main
+                           A   600    	END
+
+
+Errors: 0
+Warnings: 0
+Lines Assembled: 601

@@ -1,0 +1,600 @@
+; Zilog eZ80 ANSI C Compiler Release 3.4
+; -noglobalopt -nolocalcse -optsize -nomodsect -reduceopt
+; -padbranch -debug -peephole -const=ROM 
+	FILE	"..\main.c"
+	.assume ADL=1
+.DEBUG "C"
+.PADBRANCH CCODE
+	SEGMENT CODE
+.BEGREC "fmt_type",19
+.DEFINE "status"
+.VALUE 0
+.CLASS 8
+.TYPE 12
+.ENDEF
+.DEFINE "flags"
+.VALUE 1
+.CLASS 8
+.TYPE 12
+.ENDEF
+.DEFINE "size"
+.VALUE 2
+.CLASS 8
+.TYPE 2
+.ENDEF
+.DEFINE "chr"
+.VALUE 3
+.CLASS 8
+.TYPE 2
+.ENDEF
+.DEFINE "type"
+.VALUE 4
+.CLASS 8
+.TYPE 2
+.ENDEF
+.DEFINE "field_width"
+.VALUE 5
+.CLASS 8
+.TYPE 2
+.ENDEF
+.DEFINE "precision"
+.VALUE 6
+.CLASS 8
+.TYPE 2
+.ENDEF
+.DEFINE "set_begin"
+.VALUE 7
+.CLASS 8
+.TYPE 34
+.ENDEF
+.DEFINE "set_end"
+.VALUE 10
+.CLASS 8
+.TYPE 34
+.ENDEF
+.DEFINE "pad_whole"
+.VALUE 13
+.CLASS 8
+.TYPE 12
+.ENDEF
+.DEFINE "pad_pre_fract"
+.VALUE 14
+.CLASS 8
+.TYPE 12
+.ENDEF
+.DEFINE "pad_post_fract"
+.VALUE 15
+.CLASS 8
+.TYPE 12
+.ENDEF
+.DEFINE "pad_at"
+.VALUE 16
+.CLASS 8
+.TYPE 34
+.ENDEF
+.ENDREC "fmt_type"
+.BEGREC "flt_info",12
+.DEFINE "flags"
+.VALUE 0
+.CLASS 8
+.TYPE 12
+.ENDEF
+.DEFINE "exp"
+.VALUE 1
+.CLASS 8
+.TYPE 2
+.ENDEF
+.DEFINE "digits"
+.VALUE 2
+.CLASS 8
+.DIM 10
+.TYPE 108
+.ENDEF
+.ENDREC "flt_info"
+;    1	/*
+;    2	 * Title:			C MAndelbrot example for Agon Light
+;    3	 * Author:			James Higgs (Jum Hig)
+;    4	 * Created:			2023
+;    5	 * Last Updated:		2023-03-06
+;    6	 *
+;    7	 * Modinfo:
+;    8	 */
+;    9	 
+;   10	#include <stdio.h>
+;   11	#include <ctype.h>
+;   12	#include "mos-interface.h"
+;   13	#include "vdp.h"
+;   14	
+;   15	#define MAX_ITERATION	20
+;   16	#define SCREEN_WIDTH		320
+;   17	#define SCREEN_HEIGHT	200
+;   18	
+;   19	/// @param[in] argc			Argument count
+;   20	/// @param[in] argv			Pointer to the argument string - zero terminated, parameters separated by spaces
+;   21	int main(int argc, char * argv[]) {
+_main:
+.DEFINE "_main"
+
+.VALUE _main
+
+.CLASS 2
+
+.TYPE 68
+
+.ENDEF
+
+.BEGFUNC "main",21,"_main"
+
+.LINE 21
+
+.DEFINE "argc"
+
+.CLASS 65
+
+.VALUE 6
+
+.TYPE 4
+
+.ENDEF
+
+.DEFINE "argv"
+
+.CLASS 65
+
+.VALUE 9
+
+.TYPE 290
+
+.ENDEF
+
+.DEFINE "iteration"
+
+.CLASS 65
+
+.VALUE -1
+
+.TYPE 12
+
+.ENDEF
+
+.DEFINE "y"
+
+.CLASS 65
+
+.VALUE -4
+
+.TYPE 4
+
+.ENDEF
+
+.DEFINE "x"
+
+.CLASS 65
+
+.VALUE -7
+
+.TYPE 4
+
+.ENDEF
+
+.DEFINE "a"
+
+.CLASS 65
+
+.VALUE -11
+
+.TYPE 6
+
+.ENDEF
+
+.DEFINE "b"
+
+.CLASS 65
+
+.VALUE -15
+
+.TYPE 6
+
+.ENDEF
+
+.DEFINE "shade"
+
+.CLASS 65
+
+.VALUE -16
+
+.TYPE 12
+
+.ENDEF
+
+.DEFINE "keycode"
+
+.CLASS 65
+
+.VALUE -17
+
+.TYPE 12
+
+.ENDEF
+
+.DEFINE "xtemp"
+
+.CLASS 65
+
+.VALUE -21
+
+.TYPE 6
+
+.ENDEF
+
+.DEFINE "y0"
+
+.CLASS 65
+
+.VALUE -25
+
+.TYPE 6
+
+.ENDEF
+
+.DEFINE "x0"
+
+.CLASS 65
+
+.VALUE -29
+
+.TYPE 6
+
+.ENDEF
+
+	PUSH	IX
+	LD	IX,0
+	ADD	IX,SP
+	LEA	HL,IX+%FFFFFFDB
+	LD	SP,HL
+;   22		int	x, y;
+;   23		float x0, y0;
+;   24		UINT8 iteration;
+;   25		float a, b, xtemp;
+;   26		UINT8 shade;
+;   27		UINT8 keycode;
+;   28		
+;   29		// Set to 320 x 200 mode
+;   30		vdp_mode(2);
+.LINE 30
+
+	LD	BC,2
+	PUSH	BC
+	CALL	_vdp_mode
+	POP	BC
+;   31		vdp_cursorDisable();
+.LINE 31
+
+	CALL	_vdp_cursorDisable
+;   32		vdp_cls();
+.LINE 32
+
+	CALL	_vdp_cls
+	JR	L_12
+;   33		
+;   34	/* 	printf("Hello World\n\r");
+;   35		printf("Arguments:\n\r");
+;   36		printf("- argc: %d\n\r", argc);
+;   37		
+;   38		for(i = 0; i < argc; i++) {
+;   39			printf("- argv[%d]: %s\n\r", i, argv[i]);
+;   40		} */
+;   41	
+;   42		for (y = 0; y < SCREEN_HEIGHT; y++)
+L_13:
+.LINE 42
+
+	LD	BC,200
+	LD	HL,(IX+%FFFFFFFC)
+	OR	A,A
+	SBC	HL,BC
+	CALL	__setflag
+	JP	M,L_15
+	JR	L_16
+L_12:
+	LD	BC,0
+	LD	(IX+%FFFFFFFC),BC
+	JR	L_13
+L_15:
+;   43			{
+;   44			// Scale y coord to mandel set { -1.12, +1.12)
+;   45			y0 = (y - (SCREEN_HEIGHT / 2)) / 89.2857;				// 200 / 2 / 1.12
+.LINE 45
+
+	LD	IY,(IX+%FFFFFFFC)
+	LEA	BC,IY+%FFFFFF9C
+	CALL	__itol
+	CALL	__ltof
+	LD	HL,11702855
+	LD	E,%42
+	CALL	__fdiv
+	LD	(IX+%FFFFFFE7),BC
+	LD	(IX+%FFFFFFEA),A
+	JR	L_8
+;   46			for (x = 0; x < SCREEN_WIDTH; x++)
+L_9:
+.LINE 46
+
+	LD	BC,320
+	LD	HL,(IX+%FFFFFFF9)
+	OR	A,A
+	SBC	HL,BC
+	CALL	__setflag
+	JP	M,L_11
+	JR	L_14
+L_8:
+	LD	BC,0
+	LD	(IX+%FFFFFFF9),BC
+	JR	L_9
+L_11:
+;   47				{
+;   48				// Scale x coord to mandel set { -2.00, 0.47 } 
+;   49				x0 = (x - (SCREEN_WIDTH / 2)) / 89.2857;			// TODO - Fix!
+.LINE 49
+
+	LD	BC,16777056
+	LD	HL,(IX+%FFFFFFF9)
+	ADD	HL,BC
+	LD	BC,HL
+	CALL	__itol
+	CALL	__ltof
+	LD	HL,11702855
+	LD	E,%42
+	CALL	__fdiv
+	LD	(IX+%FFFFFFE3),BC
+	LD	(IX+%FFFFFFE6),A
+;   50	
+;   51				// Do mandel iteration
+;   52				iteration = 0;
+.LINE 52
+
+	LD	(IX+%FFFFFFFF),%0
+;   53				a = 0;
+.LINE 53
+
+	LD	BC,0
+	XOR	A,A
+	LD	(IX+%FFFFFFF5),BC
+	LD	(IX+%FFFFFFF8),A
+;   54				b = 0;
+.LINE 54
+
+	LD	BC,0
+	XOR	A,A
+	LD	(IX+%FFFFFFF1),BC
+	LD	(IX+%FFFFFFF4),A
+;   55				while ((a * a + b * b) <= (2 * 2) && iteration < MAX_ITERATION)
+L_4:
+.LINE 55
+
+	LD	HL,(IX+%FFFFFFF5)
+	LD	E,(IX+%FFFFFFF8)
+	LD	BC,(IX+%FFFFFFF5)
+	LD	A,(IX+%FFFFFFF8)
+	CALL	__fmul
+	LD	(IX+%FFFFFFDC),BC
+	LD	(IX+%FFFFFFDB),A
+	LD	HL,(IX+%FFFFFFF1)
+	LD	E,(IX+%FFFFFFF4)
+	LD	BC,(IX+%FFFFFFF1)
+	LD	A,(IX+%FFFFFFF4)
+	CALL	__fmul
+	LD	E,A
+	LD	HL,BC
+	LD	A,(IX+%FFFFFFDB)
+	LD	BC,(IX+%FFFFFFDC)
+	CALL	__fadd
+	LD	HL,8388608
+	LD	E,%40
+	CALL	__fcmp
+	JP	M,L_6
+	LD	A,(IX+%FFFFFFFF)
+	CP	A,%14
+	JR	NC,L_6
+;   56					{
+;   57					xtemp = a * a - b * b + x0;
+.LINE 57
+
+	LD	HL,(IX+%FFFFFFF5)
+	LD	E,(IX+%FFFFFFF8)
+	LD	BC,(IX+%FFFFFFF5)
+	LD	A,(IX+%FFFFFFF8)
+	CALL	__fmul
+	LD	(IX+%FFFFFFE0),BC
+	LD	(IX+%FFFFFFDF),A
+	LD	HL,(IX+%FFFFFFF1)
+	LD	E,(IX+%FFFFFFF4)
+	LD	BC,(IX+%FFFFFFF1)
+	LD	A,(IX+%FFFFFFF4)
+	CALL	__fmul
+	LD	E,A
+	LD	HL,BC
+	LD	A,(IX+%FFFFFFDF)
+	LD	BC,(IX+%FFFFFFE0)
+	CALL	__fsub
+	LD	HL,(IX+%FFFFFFE3)
+	LD	E,(IX+%FFFFFFE6)
+	CALL	__fadd
+	LD	(IX+%FFFFFFEB),BC
+	LD	(IX+%FFFFFFEE),A
+;   58					b = 2 * a * b + y0;
+.LINE 58
+
+	OR	A,A
+	SBC	HL,HL
+	LD	E,%40
+	LD	BC,(IX+%FFFFFFF5)
+	LD	A,(IX+%FFFFFFF8)
+	CALL	__fmul
+	LD	HL,(IX+%FFFFFFF1)
+	LD	E,(IX+%FFFFFFF4)
+	CALL	__fmul
+	LD	HL,(IX+%FFFFFFE7)
+	LD	E,(IX+%FFFFFFEA)
+	CALL	__fadd
+	LD	(IX+%FFFFFFF1),BC
+	LD	(IX+%FFFFFFF4),A
+;   59					a = xtemp;
+.LINE 59
+
+	LD	BC,(IX+%FFFFFFEB)
+	LD	A,(IX+%FFFFFFEE)
+	LD	(IX+%FFFFFFF5),BC
+	LD	(IX+%FFFFFFF8),A
+;   60					iteration++;
+.LINE 60
+
+	INC	(IX+%FFFFFFFF)
+;   61					}
+.LINE 61
+
+	JR	L_4
+L_6:
+;   62	
+;   63				shade = iteration * 10;
+.LINE 63
+
+	LD	B,%A
+	LD	C,(IX+%FFFFFFFF)
+	MLT	BC
+	LD	(IX+%FFFFFFF0),C
+;   64				vdp_plotColour(shade, shade, shade);
+.LINE 64
+
+	LD	C,(IX+%FFFFFFF0)
+	LD	B,%0
+	PUSH	BC
+	LD	C,(IX+%FFFFFFF0)
+	PUSH	BC
+	LD	C,(IX+%FFFFFFF0)
+	PUSH	BC
+	CALL	_vdp_plotColour
+	POP	BC
+	POP	BC
+	POP	BC
+;   65				vdp_plotPoint(x, y);
+.LINE 65
+
+	LD	BC,(IX+%FFFFFFFC)
+	PUSH	BC
+	LD	BC,(IX+%FFFFFFF9)
+	PUSH	BC
+	CALL	_vdp_plotPoint
+	POP	BC
+	POP	BC
+;   66					
+;   67				keycode = getsysvar8bit(sysvar_keycode);
+.LINE 67
+
+	LD	BC,5
+	PUSH	BC
+	CALL	_getsysvar8bit
+	POP	BC
+	LD	(IX+%FFFFFFEF),A
+;   68				//keycode = getch();
+;   69				//printf("%d\n\r", keycode);
+;   70				if (27 == keycode)
+.LINE 70
+
+	LD	A,(IX+%FFFFFFEF)
+	CP	A,%1B
+	JR	Z,L_14
+;   71					break;
+.LINE 71
+
+;   72				}
+.LINE 72
+
+	LD	BC,(IX+%FFFFFFF9)
+	INC	BC
+	LD	(IX+%FFFFFFF9),BC
+	JR	L_9
+;   73			}
+L_14:
+.LINE 73
+
+	LD	BC,(IX+%FFFFFFFC)
+	INC	BC
+	LD	(IX+%FFFFFFFC),BC
+	JR	L_13
+L_16:
+;   74		
+;   75		vdp_cursorEnable();
+.LINE 75
+
+	CALL	_vdp_cursorEnable
+;   76		
+;   77		vdp_mode(0);
+.LINE 77
+
+	LD	BC,0
+	PUSH	BC
+	CALL	_vdp_mode
+	POP	BC
+;   78		vdp_cls();
+.LINE 78
+
+	CALL	_vdp_cls
+;   79		
+;   80		return 0;
+.LINE 80
+
+	OR	A,A
+	SBC	HL,HL
+.LINE 81
+
+	LD	SP,IX
+	POP	IX
+	RET	
+
+
+;**************************** _main ***************************
+;Name                         Addr/Register   Size   Type
+;_vdp_cursorEnable                   IMPORT  -----   function
+;_getsysvar8bit                      IMPORT  -----   function
+;_vdp_plotPoint                      IMPORT  -----   function
+;_vdp_plotColour                     IMPORT  -----   function
+;_vdp_cls                            IMPORT  -----   function
+;_vdp_cursorDisable                  IMPORT  -----   function
+;_vdp_mode                           IMPORT  -----   function
+;x0                                   IX-29      4   variable
+;y0                                   IX-25      4   variable
+;xtemp                                IX-21      4   variable
+;keycode                              IX-17      1   variable
+;shade                                IX-16      1   variable
+;b                                    IX-15      4   variable
+;a                                    IX-11      4   variable
+;x                                     IX-7      3   variable
+;y                                     IX-4      3   variable
+;iteration                             IX-1      1   variable
+;argv                                  IX+9      3   parameter
+;argc                                  IX+6      3   parameter
+
+
+; Stack Frame Size: 49 (bytes)
+;       Spill Code: 0 (instruction)
+
+
+.ENDFUNC "main",81,"_main"
+	XREF _vdp_plotPoint:ROM
+	XREF _vdp_plotColour:ROM
+	XREF _vdp_cursorEnable:ROM
+	XREF _vdp_cursorDisable:ROM
+	XREF _vdp_cls:ROM
+	XREF _vdp_mode:ROM
+	XREF _getsysvar8bit:ROM
+	XREF __fadd:ROM
+	XREF __fsub:ROM
+	XREF __fmul:ROM
+	XREF __fdiv:ROM
+	XREF __fcmp:ROM
+	XREF __ltof:ROM
+	XREF __itol:ROM
+	XREF __setflag:ROM
+	XDEF _main
+	END
