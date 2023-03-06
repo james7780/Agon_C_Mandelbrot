@@ -1,4 +1,4 @@
-Zilog eZ80 Macro Assembler Version 4.3 (19073001) RELISTED06-Mar-23     12:35:48     page:   1
+Zilog eZ80 Macro Assembler Version 4.3 (19073001) RELISTED06-Mar-23     10:19:13     page:   1
 
 
 PC     Object              I  Line    Source 
@@ -297,7 +297,7 @@ PC     Object              I  Line    Source
 040129 DD27FC              A   293    	LD	HL,(IX+%FFFFFFFC)
 04012C B7                  A   294    	OR	A,A
 04012D ED42                A   295    	SBC	HL,BC
-04012F CD 00 0F 04         A   296    	CALL	__setflag
+04012F CD 09 0F 04         A   296    	CALL	__setflag
 040133 FA 45 01 04         A   297    	JP	M,L_15
 040137 C3 E7 02 04         A   298    	JR	L_16
 04013B                     A   299    L_12:
@@ -312,11 +312,11 @@ PC     Object              I  Line    Source
                            A   308    
 040145 DD31FC              A   309    	LD	IY,(IX+%FFFFFFFC)
 040148 ED039C              A   310    	LEA	BC,IY+%FFFFFF9C
-04014B CD 09 12 04         A   311    	CALL	__itol
-04014F CD 47 11 04         A   312    	CALL	__ltof
+04014B CD 12 12 04         A   311    	CALL	__itol
+04014F CD 50 11 04         A   312    	CALL	__ltof
 040153 214792B2            A   313    	LD	HL,11702855
 040157 1E42                A   314    	LD	E,%42
-040159 CD 82 10 04         A   315    	CALL	__fdiv
+040159 CD 8B 10 04         A   315    	CALL	__fdiv
 04015D DD0FE7              A   316    	LD	(IX+%FFFFFFE7),BC
 040160 DD77EA              A   317    	LD	(IX+%FFFFFFEA),A
 040163 18 16 00            A   318    	JR	L_8
@@ -328,7 +328,7 @@ PC     Object              I  Line    Source
 04016A DD27F9              A   324    	LD	HL,(IX+%FFFFFFF9)
 04016D B7                  A   325    	OR	A,A
 04016E ED42                A   326    	SBC	HL,BC
-040170 CD 00 0F 04         A   327    	CALL	__setflag
+040170 CD 09 0F 04         A   327    	CALL	__setflag
 040174 FA 86 01 04         A   328    	JP	M,L_11
 040178 C3 DB 02 04         A   329    	JR	L_14
 04017C                     A   330    L_8:
@@ -345,11 +345,11 @@ PC     Object              I  Line    Source
 04018A DD27F9              A   341    	LD	HL,(IX+%FFFFFFF9)
 04018D 09                  A   342    	ADD	HL,BC
 04018E E5C1                A   343    	LD	BC,HL
-040190 CD 09 12 04         A   344    	CALL	__itol
-040194 CD 47 11 04         A   345    	CALL	__ltof
+040190 CD 12 12 04         A   344    	CALL	__itol
+040194 CD 50 11 04         A   345    	CALL	__ltof
 040198 214792B2            A   346    	LD	HL,11702855
 04019C 1E42                A   347    	LD	E,%42
-04019E CD 82 10 04         A   348    	CALL	__fdiv
+04019E CD 8B 10 04         A   348    	CALL	__fdiv
 0401A2 DD0FE3              A   349    	LD	(IX+%FFFFFFE3),BC
 0401A5 DD77E6              A   350    	LD	(IX+%FFFFFFE6),A
                            A   351    ;   50	
@@ -380,22 +380,22 @@ PC     Object              I  Line    Source
 0401C5 DD5EF8              A   376    	LD	E,(IX+%FFFFFFF8)
 0401C8 DD07F5              A   377    	LD	BC,(IX+%FFFFFFF5)
 0401CB DD7EF8              A   378    	LD	A,(IX+%FFFFFFF8)
-0401CE CD 45 0F 04         A   379    	CALL	__fmul
+0401CE CD 4E 0F 04         A   379    	CALL	__fmul
 0401D2 DD0FDC              A   380    	LD	(IX+%FFFFFFDC),BC
 0401D5 DD77DB              A   381    	LD	(IX+%FFFFFFDB),A
 0401D8 DD27F1              A   382    	LD	HL,(IX+%FFFFFFF1)
 0401DB DD5EF4              A   383    	LD	E,(IX+%FFFFFFF4)
 0401DE DD07F1              A   384    	LD	BC,(IX+%FFFFFFF1)
 0401E1 DD7EF4              A   385    	LD	A,(IX+%FFFFFFF4)
-0401E4 CD 45 0F 04         A   386    	CALL	__fmul
+0401E4 CD 4E 0F 04         A   386    	CALL	__fmul
 0401E8 5F                  A   387    	LD	E,A
 0401E9 C5E1                A   388    	LD	HL,BC
 0401EB DD7EDB              A   389    	LD	A,(IX+%FFFFFFDB)
 0401EE DD07DC              A   390    	LD	BC,(IX+%FFFFFFDC)
-0401F1 CD 43 12 04         A   391    	CALL	__fadd
+0401F1 CD 4C 12 04         A   391    	CALL	__fadd
 0401F5 21000080            A   392    	LD	HL,8388608
 0401F9 1E40                A   393    	LD	E,%40
-0401FB CD 10 12 04         A   394    	CALL	__fcmp
+0401FB CD 19 12 04         A   394    	CALL	__fcmp
 0401FF FA 8D 02 04         A   395    	JP	M,L_6
 040203 DD7EFF              A   396    	LD	A,(IX+%FFFFFFFF)
 040206 FE14                A   397    	CP	A,%14
@@ -408,22 +408,22 @@ PC     Object              I  Line    Source
 040210 DD5EF8              A   404    	LD	E,(IX+%FFFFFFF8)
 040213 DD07F5              A   405    	LD	BC,(IX+%FFFFFFF5)
 040216 DD7EF8              A   406    	LD	A,(IX+%FFFFFFF8)
-040219 CD 45 0F 04         A   407    	CALL	__fmul
+040219 CD 4E 0F 04         A   407    	CALL	__fmul
 04021D DD0FE0              A   408    	LD	(IX+%FFFFFFE0),BC
 040220 DD77DF              A   409    	LD	(IX+%FFFFFFDF),A
 040223 DD27F1              A   410    	LD	HL,(IX+%FFFFFFF1)
 040226 DD5EF4              A   411    	LD	E,(IX+%FFFFFFF4)
 040229 DD07F1              A   412    	LD	BC,(IX+%FFFFFFF1)
 04022C DD7EF4              A   413    	LD	A,(IX+%FFFFFFF4)
-04022F CD 45 0F 04         A   414    	CALL	__fmul
+04022F CD 4E 0F 04         A   414    	CALL	__fmul
 040233 5F                  A   415    	LD	E,A
 040234 C5E1                A   416    	LD	HL,BC
 040236 DD7EDF              A   417    	LD	A,(IX+%FFFFFFDF)
 040239 DD07E0              A   418    	LD	BC,(IX+%FFFFFFE0)
-04023C CD 34 0F 04         A   419    	CALL	__fsub
+04023C CD 3D 0F 04         A   419    	CALL	__fsub
 040240 DD27E3              A   420    	LD	HL,(IX+%FFFFFFE3)
 040243 DD5EE6              A   421    	LD	E,(IX+%FFFFFFE6)
-040246 CD 43 12 04         A   422    	CALL	__fadd
+040246 CD 4C 12 04         A   422    	CALL	__fadd
 04024A DD0FEB              A   423    	LD	(IX+%FFFFFFEB),BC
 04024D DD77EE              A   424    	LD	(IX+%FFFFFFEE),A
                            A   425    ;   58					b = 2 * a * b + y0;
@@ -434,13 +434,13 @@ PC     Object              I  Line    Source
 040253 1E40                A   430    	LD	E,%40
 040255 DD07F5              A   431    	LD	BC,(IX+%FFFFFFF5)
 040258 DD7EF8              A   432    	LD	A,(IX+%FFFFFFF8)
-04025B CD 45 0F 04         A   433    	CALL	__fmul
+04025B CD 4E 0F 04         A   433    	CALL	__fmul
 04025F DD27F1              A   434    	LD	HL,(IX+%FFFFFFF1)
 040262 DD5EF4              A   435    	LD	E,(IX+%FFFFFFF4)
-040265 CD 45 0F 04         A   436    	CALL	__fmul
+040265 CD 4E 0F 04         A   436    	CALL	__fmul
 040269 DD27E7              A   437    	LD	HL,(IX+%FFFFFFE7)
 04026C DD5EEA              A   438    	LD	E,(IX+%FFFFFFEA)
-04026F CD 43 12 04         A   439    	CALL	__fadd
+04026F CD 4C 12 04         A   439    	CALL	__fadd
 040273 DD0FF1              A   440    	LD	(IX+%FFFFFFF1),BC
 040276 DD77F4              A   441    	LD	(IX+%FFFFFFF4),A
                            A   442    ;   59					a = xtemp;

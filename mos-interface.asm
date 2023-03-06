@@ -25,6 +25,8 @@
 	XDEF _getsysvar8bit
 	XDEF _getsysvar16bit
 	XDEF _getsysvar24bit
+	
+	XDEF _getkeycode			;; JH
 
 	segment CODE
 	.assume ADL=1
@@ -121,6 +123,14 @@ _getsysvar8bit:
 	;ld de, (ix + 2)
 	pop bc
 	pop iy
+	ret
+
+; JH
+_getkeycode:
+	push ix
+	ld a, mos_getkey
+	rst.lil 08h					; keycode now in A
+	pop ix
 	ret
 	
 

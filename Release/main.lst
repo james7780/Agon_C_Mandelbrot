@@ -1,308 +1,413 @@
-Zilog eZ80 Macro Assembler Version 4.3 (19073001)06-Mar-23     12:27:21     page:   1
+Zilog eZ80 Macro Assembler Version 4.3 (19073001)06-Mar-23     12:16:35     page:   1
 
 
 PC     Object              I  Line    Source 
                            A     1    ; Zilog eZ80 ANSI C Compiler Release 3.4
-                           A     2    ; -nomodsect -optsize -noreduceopt -nopadbranch
+                           A     2    ; -nomodsect -optspeed -noreduceopt -nopadbranc
                            A     3    ; -globalopt -localcse -const=ROM 
                            A     4    	FILE	"..\main.c"
                            A     5    	.assume ADL=1
-                           A     6    	SEGMENT CODE
-                           A     7    ;    1	/*
-                           A     8    ;    2	 * Title:			C MAndelbrot exampl
-                           A     9    ;    3	 * Author:			James Higgs (Jum Hi
-                           A    10    ;    4	 * Created:			2023
-                           A    11    ;    5	 * Last Updated:		2023-03-06
-                           A    12    ;    6	 *
-                           A    13    ;    7	 * Modinfo:
-                           A    14    ;    8	 */
-                           A    15    ;    9	 
-                           A    16    ;   10	#include <stdio.h>
-                           A    17    ;   11	#include <ctype.h>
-                           A    18    ;   12	#include "mos-interface.h"
-                           A    19    ;   13	#include "vdp.h"
-                           A    20    ;   14	
-                           A    21    ;   15	#define MAX_ITERATION	20
-                           A    22    ;   16	#define SCREEN_WIDTH		320
-                           A    23    ;   17	#define SCREEN_HEIGHT	200
-                           A    24    ;   18	
-                           A    25    ;   19	/// @param[in] argc			Argument co
-                           A    26    ;   20	/// @param[in] argv			Pointer to 
-                           A    27    ;   21	int main(int argc, char * argv[]) {
-000000                     A    28    _main:
-000000 21DBFFFF            A    29    	LD	HL,-37
-000004 CD 00 00 00         A    30    	CALL	__frameset
-                           A    31    ;   22		int	x, y;
-                           A    32    ;   23		float x0, y0;
-                           A    33    ;   24		UINT8 iteration;
-                           A    34    ;   25		float a, b, xtemp;
-                           A    35    ;   26		UINT8 shade;
-                           A    36    ;   27		UINT8 keycode;
-                           A    37    ;   28		
-                           A    38    ;   29		// Set to 320 x 200 mode
-                           A    39    ;   30		vdp_mode(2);
-000008 01020000            A    40    	LD	BC,2
-00000C C5                  A    41    	PUSH	BC
-00000D CD 00 00 00         A    42    	CALL	_vdp_mode
-000011 C1                  A    43    	POP	BC
-                           A    44    ;   31		vdp_cursorDisable();
-000012 CD 00 00 00         A    45    	CALL	_vdp_cursorDisable
-                           A    46    ;   32		vdp_cls();
-000016 CD 00 00 00         A    47    	CALL	_vdp_cls
-                           A    48    ;   33		
-                           A    49    ;   34	/* 	printf("Hello World\n\r");
-                           A    50    ;   35		printf("Arguments:\n\r");
-                           A    51    ;   36		printf("- argc: %d\n\r", argc);
-                           A    52    ;   37		
-                           A    53    ;   38		for(i = 0; i < argc; i++) {
-                           A    54    ;   39			printf("- argv[%d]: %s\n\r", i,
-                           A    55    ;   40		} */
-                           A    56    ;   41	
-                           A    57    ;   42		for (y = 0; y < SCREEN_HEIGHT; y++)
-00001A 01000000            A    58    	LD	BC,0
-00001E DD0FFC              A    59    	LD	(IX+%FFFFFFFC),BC
-000021 C3 8D 01 00         A    60    	JR	L_13
-000025                     A    61    L_11:
-                           A    62    ;   43			{
-                           A    63    ;   44			// Scale y coord to mandel set 
-                           A    64    ;   45			y0 = (y - (SCREEN_HEIGHT / 2)) 
-000025 DD31FC              A    65    	LD	IY,(IX+%FFFFFFFC)
-000028 ED039C              A    66    	LEA	BC,IY+%FFFFFF9C
-00002B CD 00 00 00         A    67    	CALL	__itol
-00002F CD 00 00 00         A    68    	CALL	__ltof
-000033 214792B2            A    69    	LD	HL,11702855
-000037 1E42                A    70    	LD	E,%42
-000039 CD 00 00 00         A    71    	CALL	__fdiv
-00003D DD0FDB              A    72    	LD	(IX+%FFFFFFDB),BC
-000040 DD77DE              A    73    	LD	(IX+%FFFFFFDE),A
-                           A    74    ;   46			for (x = 0; x < SCREEN_WIDTH; x
-000043 01000000            A    75    	LD	BC,0
-000047 DD0FF9              A    76    	LD	(IX+%FFFFFFF9),BC
-00004A C3 74 01 00         A    77    	JR	L_10
-00004E                     A    78    L_8:
-                           A    79    ;   47				{
-                           A    80    ;   48				// Scale x coord to mandel 
-                           A    81    ;   49				x0 = (x - (SCREEN_WIDTH / 2
-00004E 0160FFFF            A    82    	LD	BC,16777056
-000052 DD27F9              A    83    	LD	HL,(IX+%FFFFFFF9)
-000055 09                  A    84    	ADD	HL,BC
-000056 E5C1                A    85    	LD	BC,HL
-000058 CD 00 00 00         A    86    	CALL	__itol
-00005C CD 00 00 00         A    87    	CALL	__ltof
-000060 214792B2            A    88    	LD	HL,11702855
-000064 1E42                A    89    	LD	E,%42
-000066 CD 00 00 00         A    90    	CALL	__fdiv
-00006A DD0FE3              A    91    	LD	(IX+%FFFFFFE3),BC
-00006D DD77E6              A    92    	LD	(IX+%FFFFFFE6),A
-                           A    93    ;   50	
-                           A    94    ;   51				// Do mandel iteration
-                           A    95    ;   52				iteration = 0;
-000070 DD36FF00            A    96    	LD	(IX+%FFFFFFFF),%0
-                           A    97    ;   53				a = 0;
-000074 01000000            A    98    	LD	BC,0
-000078 AF                  A    99    	XOR	A,A
-000079 DD0FF0              A   100    	LD	(IX+%FFFFFFF0),BC
-00007C DD77F3              A   101    	LD	(IX+%FFFFFFF3),A
-                           A   102    ;   54				b = 0;
-00007F AF                  A   103    	XOR	A,A
-000080 DD0FF4              A   104    	LD	(IX+%FFFFFFF4),BC
-000083 DD77F7              A   105    	LD	(IX+%FFFFFFF7),A
-                           A   106    ;   55				while ((a * a + b * b) <= (
-000086 18 58               A   107    	JR	L_4
-000088                     A   108    L_5:
-                           A   109    ;   56					{
-                           A   110    ;   57					xtemp = a * a - b * b +
-000088 DD27EB              A   111    	LD	HL,(IX+%FFFFFFEB)
-00008B DD5EEE              A   112    	LD	E,(IX+%FFFFFFEE)
-00008E DD07E7              A   113    	LD	BC,(IX+%FFFFFFE7)
-000091 DD7EEA              A   114    	LD	A,(IX+%FFFFFFEA)
-000094 CD 00 00 00         A   115    	CALL	__fsub
-000098 DD27E3              A   116    	LD	HL,(IX+%FFFFFFE3)
-00009B DD5EE6              A   117    	LD	E,(IX+%FFFFFFE6)
-00009E CD 00 00 00         A   118    	CALL	__fadd
-0000A2 DD0FDF              A   119    	LD	(IX+%FFFFFFDF),BC
-0000A5 DD77E2              A   120    	LD	(IX+%FFFFFFE2),A
-0000A8 B7                  A   121    	OR	A,A
-                           A   122    ;   58					b = 2 * a * b + y0;
-0000A9 ED62                A   123    	SBC	HL,HL
-0000AB 1E40                A   124    	LD	E,%40
-0000AD DD07F0              A   125    	LD	BC,(IX+%FFFFFFF0)
-0000B0 DD7EF3              A   126    	LD	A,(IX+%FFFFFFF3)
-0000B3 CD 00 00 00         A   127    	CALL	__fmul
-0000B7 DD27F4              A   128    	LD	HL,(IX+%FFFFFFF4)
-0000BA DD5EF7              A   129    	LD	E,(IX+%FFFFFFF7)
-0000BD CD 00 00 00         A   130    	CALL	__fmul
-0000C1 DD27DB              A   131    	LD	HL,(IX+%FFFFFFDB)
-0000C4 DD5EDE              A   132    	LD	E,(IX+%FFFFFFDE)
-0000C7 CD 00 00 00         A   133    	CALL	__fadd
-0000CB DD0FF4              A   134    	LD	(IX+%FFFFFFF4),BC
-0000CE DD77F7              A   135    	LD	(IX+%FFFFFFF7),A
-                           A   136    ;   59					a = xtemp;
-0000D1 DD07DF              A   137    	LD	BC,(IX+%FFFFFFDF)
-0000D4 DD7EE2              A   138    	LD	A,(IX+%FFFFFFE2)
-0000D7 DD0FF0              A   139    	LD	(IX+%FFFFFFF0),BC
-0000DA DD77F3              A   140    	LD	(IX+%FFFFFFF3),A
-                           A   141    ;   60					iteration++;
-0000DD DD34FF              A   142    	INC	(IX+%FFFFFFFF)
-                           A   143    ;   61					}
-0000E0                     A   144    L_4:
-0000E0 DD27F0              A   145    	LD	HL,(IX+%FFFFFFF0)
-0000E3 DD5EF3              A   146    	LD	E,(IX+%FFFFFFF3)
-0000E6 DD07F0              A   147    	LD	BC,(IX+%FFFFFFF0)
-0000E9 DD7EF3              A   148    	LD	A,(IX+%FFFFFFF3)
-0000EC CD 00 00 00         A   149    	CALL	__fmul
-0000F0 DD0FE7              A   150    	LD	(IX+%FFFFFFE7),BC
-0000F3 DD77EA              A   151    	LD	(IX+%FFFFFFEA),A
-0000F6 DD27F4              A   152    	LD	HL,(IX+%FFFFFFF4)
-0000F9 DD5EF7              A   153    	LD	E,(IX+%FFFFFFF7)
-0000FC DD07F4              A   154    	LD	BC,(IX+%FFFFFFF4)
-0000FF DD7EF7              A   155    	LD	A,(IX+%FFFFFFF7)
-000102 CD 00 00 00         A   156    	CALL	__fmul
-000106 DD0FEB              A   157    	LD	(IX+%FFFFFFEB),BC
-000109 DD77EE              A   158    	LD	(IX+%FFFFFFEE),A
-00010C C5E1                A   159    	LD	HL,BC
-00010E DD5EEE              A   160    	LD	E,(IX+%FFFFFFEE)
-000111 DD07E7              A   161    	LD	BC,(IX+%FFFFFFE7)
-000114 DD7EEA              A   162    	LD	A,(IX+%FFFFFFEA)
-000117 CD 00 00 00         A   163    	CALL	__fadd
-00011B 21000080            A   164    	LD	HL,8388608
-00011F 1E40                A   165    	LD	E,%40
-000121 CD 00 00 00         A   166    	CALL	__fcmp
-000125 FA 32 01 00         A   167    	JP	M,L_6
-000129 DD7EFF              A   168    	LD	A,(IX+%FFFFFFFF)
-00012C FE14                A   169    	CP	A,%14
-00012E DA 88 00 00         A   170    	JR	C,L_5
-000132                     A   171    L_6:
-                           A   172    ;   62	
-                           A   173    ;   63				shade = iteration * 10;
-000132 060A                A   174    	LD	B,%A
-000134 DD4EFF              A   175    	LD	C,(IX+%FFFFFFFF)
-000137 ED4C                A   176    	MLT	BC
-000139 DD71F8              A   177    	LD	(IX+%FFFFFFF8),C
-                           A   178    ;   64				vdp_plotColour(shade, shade
-00013C 0600                A   179    	LD	B,%0
-00013E C5                  A   180    	PUSH	BC
-00013F DD4EF8              A   181    	LD	C,(IX+%FFFFFFF8)
-000142 C5                  A   182    	PUSH	BC
-000143 DD4EF8              A   183    	LD	C,(IX+%FFFFFFF8)
-000146 C5                  A   184    	PUSH	BC
-000147 CD 00 00 00         A   185    	CALL	_vdp_plotColour
-00014B C1                  A   186    	POP	BC
-00014C C1                  A   187    	POP	BC
-00014D C1                  A   188    	POP	BC
-                           A   189    ;   65				vdp_plotPoint(x, y);
-00014E DD07FC              A   190    	LD	BC,(IX+%FFFFFFFC)
-000151 C5                  A   191    	PUSH	BC
-000152 DD07F9              A   192    	LD	BC,(IX+%FFFFFFF9)
-000155 C5                  A   193    	PUSH	BC
-000156 CD 00 00 00         A   194    	CALL	_vdp_plotPoint
-00015A C1                  A   195    	POP	BC
-00015B C1                  A   196    	POP	BC
-                           A   197    ;   66					
-                           A   198    ;   67				keycode = getsysvar8bit(sys
-00015C 01050000            A   199    	LD	BC,5
-000160 C5                  A   200    	PUSH	BC
-000161 CD 00 00 00         A   201    	CALL	_getsysvar8bit
-000165 C1                  A   202    	POP	BC
-000166 DD77EF              A   203    	LD	(IX+%FFFFFFEF),A
-                           A   204    ;   68				//keycode = getch();
-                           A   205    ;   69				//printf("%d\n\r", keycode)
-                           A   206    ;   70				if (27 == keycode)
-000169 FE1B                A   207    	CP	A,%1B
-00016B 28 19               A   208    	JR	Z,L_12
-00016D DD07F9              A   209    	LD	BC,(IX+%FFFFFFF9)
-000170 03                  A   210    	INC	BC
-000171 DD0FF9              A   211    	LD	(IX+%FFFFFFF9),BC
-                           A   212    ;   71					break;
-                           A   213    ;   72				}
-000174                     A   214    L_10:
-000174 01400100            A   215    	LD	BC,320
-000178 DD27F9              A   216    	LD	HL,(IX+%FFFFFFF9)
-00017B B7                  A   217    	OR	A,A
-00017C ED42                A   218    	SBC	HL,BC
-00017E CD 00 00 00         A   219    	CALL	__setflag
-000182 FA 4E 00 00         A   220    	JP	M,L_8
-                           A   221    ;   73			}
-000186                     A   222    L_12:
-000186 DD07FC              A   223    	LD	BC,(IX+%FFFFFFFC)
-000189 03                  A   224    	INC	BC
-00018A DD0FFC              A   225    	LD	(IX+%FFFFFFFC),BC
-00018D                     A   226    L_13:
-00018D 01C80000            A   227    	LD	BC,200
-000191 DD27FC              A   228    	LD	HL,(IX+%FFFFFFFC)
-000194 B7                  A   229    	OR	A,A
-000195 ED42                A   230    	SBC	HL,BC
-000197 CD 00 00 00         A   231    	CALL	__setflag
-00019B FA 25 00 00         A   232    	JP	M,L_11
-                           A   233    ;   74		
-                           A   234    ;   75		vdp_cursorEnable();
-00019F CD 00 00 00         A   235    	CALL	_vdp_cursorEnable
-                           A   236    ;   76		
-                           A   237    ;   77		vdp_mode(0);
-0001A3 01000000            A   238    	LD	BC,0
-0001A7 C5                  A   239    	PUSH	BC
-0001A8 CD 00 00 00         A   240    	CALL	_vdp_mode
-0001AC C1                  A   241    	POP	BC
-                           A   242    ;   78		vdp_cls();
-0001AD CD 00 00 00         A   243    	CALL	_vdp_cls
-0001B1 B7                  A   244    	OR	A,A
-                           A   245    ;   79		
-                           A   246    ;   80		return 0;
-0001B2 ED62                A   247    	SBC	HL,HL
-0001B4 DDF9                A   248    	LD	SP,IX
-0001B6 DDE1                A   249    	POP	IX
-0001B8 C9                  A   250    	RET	
-                           A   251    
-                           A   252    
-                           A   253    ;**************************** _main ***********
-                           A   254    ;Name                         Addr/Register   S
-                           A   255    ;_vdp_cursorEnable                   IMPORT  --
-                           A   256    ;_getsysvar8bit                      IMPORT  --
-                           A   257    ;_vdp_plotPoint                      IMPORT  --
-                           A   258    ;_vdp_plotColour                     IMPORT  --
-                           A   259    ;_vdp_cls                            IMPORT  --
-                           A   260    ;_vdp_cursorDisable                  IMPORT  --
-                           A   261    ;_vdp_mode                           IMPORT  --
-                           A   262    ;y0                                   IX-37    
-                           A   263    ;xtemp                                IX-33    
-                           A   264    ;x0                                   IX-29    
-                           A   265    ;G_0                                  IX-25    
-                           A   266    ;G_1                                  IX-21    
-                           A   267    ;keycode                              IX-17    
-                           A   268    ;a                                    IX-16    
-                           A   269    ;b                                    IX-12    
-                           A   270    ;shade                                 IX-8    
-                           A   271    ;x                                     IX-7    
-                           A   272    ;y                                     IX-4    
-                           A   273    ;iteration                             IX-1    
-                           A   274    ;argv                                  IX+9    
-                           A   275    ;argc                                  IX+6    
-                           A   276    
-                           A   277    
-                           A   278    ; Stack Frame Size: 49 (bytes)
-                           A   279    ;       Spill Code: 0 (instruction)
-                           A   280    
-                           A   281    
-                           A   282    	XREF _vdp_plotPoint:ROM
-                           A   283    	XREF _vdp_plotColour:ROM
-                           A   284    	XREF _vdp_cursorEnable:ROM
-                           A   285    	XREF _vdp_cursorDisable:ROM
-                           A   286    	XREF _vdp_cls:ROM
-                           A   287    	XREF _vdp_mode:ROM
-                           A   288    	XREF _getsysvar8bit:ROM
-                           A   289    	XREF __fadd:ROM
-                           A   290    	XREF __fsub:ROM
-                           A   291    	XREF __fmul:ROM
-                           A   292    	XREF __fdiv:ROM
-                           A   293    	XREF __fcmp:ROM
-                           A   294    	XREF __ltof:ROM
-                           A   295    	XREF __itol:ROM
-                           A   296    	XREF __frameset:ROM
-                           A   297    	XREF __setflag:ROM
-                           A   298    	XDEF _main
-                           A   299    	END
+                           A     6    	SEGMENT DATA
+000000                     A     7    _colours:
+000000 00                  A     8    	DB	0
+000001 00                  A     9    	DB	0
+000002 00                  A    10    	DB	0
+000003 00                  A    11    	DB	0
+000004 00                  A    12    	DB	0
+000005 FF                  A    13    	DB	255
+000006 00                  A    14    	DB	0
+000007 FF                  A    15    	DB	255
+000008 00                  A    16    	DB	0
+000009 00                  A    17    	DB	0
+00000A FF                  A    18    	DB	255
+00000B FF                  A    19    	DB	255
+00000C FF                  A    20    	DB	255
+00000D 00                  A    21    	DB	0
+00000E 00                  A    22    	DB	0
+00000F FF                  A    23    	DB	255
+000010 00                  A    24    	DB	0
+000011 FF                  A    25    	DB	255
+000012 FF                  A    26    	DB	255
+000013 FF                  A    27    	DB	255
+000014 00                  A    28    	DB	0
+000015 FF                  A    29    	DB	255
+000016 00                  A    30    	DB	0
+000017 FF                  A    31    	DB	255
+                           A    32    ;    1	/*
+                           A    33    ;    2	 * Title:			C MAndelbrot exampl
+                           A    34    ;    3	 * Author:			James Higgs (Jum Hi
+                           A    35    ;    4	 * Created:			2023
+                           A    36    ;    5	 * Last Updated:		2023-03-06
+                           A    37    ;    6	 *
+                           A    38    ;    7	 * Modinfo:
+                           A    39    ;    8	 */
+                           A    40    ;    9	 
+                           A    41    ;   10	#include <stdio.h>
+                           A    42    ;   11	#include <ctype.h>
+                           A    43    ;   12	#include "mos-interface.h"
+                           A    44    ;   13	#include "vdp.h"
+                           A    45    ;   14	
+                           A    46    ;   15	#define MAX_ITERATION	16	//20
+                           A    47    ;   16	#define SCREEN_WIDTH	320
+                           A    48    ;   17	#define SCREEN_HEIGHT	200
+                           A    49    ;   18	
+                           A    50    ;   19	struct RGB_t
+                           A    51    ;   20	{
+                           A    52    ;   21		UINT8 r;
+                           A    53    ;   22		UINT8 g;
+                           A    54    ;   23		UINT8 b;
+                           A    55    ;   24	};
+                           A    56    ;   25	
+                           A    57    ;   26	// Colours for the mandlebrot shading
+                           A    58    ;   27	struct RGB_t colours[8] = {
+                           A    59    	SEGMENT CODE
+                           A    60    ;   28		 { 0,   0,   0   },
+                           A    61    ;   29		 { 0,   0,   255 },
+                           A    62    ;   30		 { 0,   255, 0   },
+                           A    63    ;   31		 { 0,   255, 255 },
+                           A    64    ;   32		 { 255, 0,   0   },
+                           A    65    ;   33		 { 255, 0,   255 },
+                           A    66    ;   34		 { 255, 255, 0   },
+                           A    67    ;   35		 { 255, 0,   255 }	
+                           A    68    ;   36	};
+                           A    69    ;   37	
+                           A    70    ;   38	/// @param[in] argc			Argument co
+                           A    71    ;   39	/// @param[in] argv			Pointer to 
+                           A    72    ;   40	int main(int argc, char * argv[]) {
+000000                     A    73    _main:
+000000 21D7FFFF            A    74    	LD	HL,-41
+000004 CD 00 00 00         A    75    	CALL	__frameset
+                           A    76    ;   41		int	x, y;
+                           A    77    ;   42		float x0, y0;
+                           A    78    ;   43		float x2, y2;
+                           A    79    ;   44		float w;
+                           A    80    ;   45		UINT8 iteration;
+                           A    81    ;   46		float a, b, xtemp;
+                           A    82    ;   47		UINT8 shade;
+                           A    83    ;   48		UINT8 keycode;
+                           A    84    ;   49		
+                           A    85    ;   50		// Set to 320 x 200 mode
+                           A    86    ;   51		vdp_mode(2);
+000008 01020000            A    87    	LD	BC,2
+00000C C5                  A    88    	PUSH	BC
+00000D CD 00 00 00         A    89    	CALL	_vdp_mode
+000011 C1                  A    90    	POP	BC
+                           A    91    ;   52		vdp_cursorDisable();
+000012 CD 00 00 00         A    92    	CALL	_vdp_cursorDisable
+                           A    93    ;   53		vdp_cls();
+000016 CD 00 00 00         A    94    	CALL	_vdp_cls
+                           A    95    ;   54		
+                           A    96    ;   55	/* 	printf("Hello World\n\r");
+                           A    97    ;   56		printf("Arguments:\n\r");
+                           A    98    ;   57		printf("- argc: %d\n\r", argc);
+                           A    99    ;   58		
+                           A   100    ;   59		for(i = 0; i < argc; i++) {
+                           A   101    ;   60			printf("- argv[%d]: %s\n\r", i,
+                           A   102    ;   61		} */
+                           A   103    ;   62	
+                           A   104    ;   63		for (y = 0; y < SCREEN_HEIGHT / 2; 
+00001A 01000000            A   105    	LD	BC,0
+00001E DD0FFD              A   106    	LD	(IX+%FFFFFFFD),BC
+000021 C3 E8 01 00         A   107    	JR	L_13
+000025                     A   108    L_11:
+                           A   109    ;   64			{
+                           A   110    ;   65			// Scale y coord to mandel set 
+                           A   111    ;   66			y0 = (y - (SCREEN_HEIGHT / 2)) 
+000025 DD31FD              A   112    	LD	IY,(IX+%FFFFFFFD)
+000028 ED039C              A   113    	LEA	BC,IY+%FFFFFF9C
+00002B CD 00 00 00         A   114    	CALL	__itol
+00002F CD 00 00 00         A   115    	CALL	__ltof
+000033 210000A0            A   116    	LD	HL,10485760
+000037 1E42                A   117    	LD	E,%42
+000039 CD 00 00 00         A   118    	CALL	__fdiv
+00003D DD0FDF              A   119    	LD	(IX+%FFFFFFDF),BC
+000040 DD77E2              A   120    	LD	(IX+%FFFFFFE2),A
+                           A   121    ;   67			for (x = 0; x < SCREEN_WIDTH; x
+000043 01000000            A   122    	LD	BC,0
+000047 DD0FFA              A   123    	LD	(IX+%FFFFFFFA),BC
+00004A C3 D3 01 00         A   124    	JR	L_10
+00004E                     A   125    L_8:
+                           A   126    ;   68				{
+                           A   127    ;   69				// Scale x coord to mandel 
+                           A   128    ;   70				x0 = (x - (SCREEN_WIDTH / 2
+00004E 0160FFFF            A   129    	LD	BC,16777056
+000052 DD27FA              A   130    	LD	HL,(IX+%FFFFFFFA)
+000055 09                  A   131    	ADD	HL,BC
+000056 E5C1                A   132    	LD	BC,HL
+000058 CD 00 00 00         A   133    	CALL	__itol
+00005C CD 00 00 00         A   134    	CALL	__ltof
+000060 210000A0            A   135    	LD	HL,10485760
+000064 1E42                A   136    	LD	E,%42
+000066 CD 00 00 00         A   137    	CALL	__fdiv
+00006A B7                  A   138    	OR	A,A
+00006B ED62                A   139    	SBC	HL,HL
+00006D 1EBF                A   140    	LD	E,%BF
+00006F CD 00 00 00         A   141    	CALL	__fadd
+000073 DD0FDB              A   142    	LD	(IX+%FFFFFFDB),BC
+000076 DD77DE              A   143    	LD	(IX+%FFFFFFDE),A
+                           A   144    ;   71	
+                           A   145    ;   72				// Do mandel iteration
+                           A   146    ;   73				iteration = 0;
+000079 DD36F900            A   147    	LD	(IX+%FFFFFFF9),%0
+                           A   148    ;   74				a = 0;
+                           A   149    ;   75				b = 0;
+                           A   150    ;   76	/* unoptimised version
+                           A   151    ;   77				while ((a * a + b * b) <= (
+                           A   152    ;   78					{
+                           A   153    ;   79					xtemp = a * a - b * b +
+                           A   154    ;   80					b = 2 * a * b + y0;
+                           A   155    ;   81					a = xtemp;
+                           A   156    ;   82					iteration++;
+                           A   157    ;   83					}
+                           A   158    ;   84	*/
+                           A   159    ;   85				// optimised version
+                           A   160    ;   86				x2 = y2 = w = 0;
+00007D 01000000            A   161    	LD	BC,0
+000081 AF                  A   162    	XOR	A,A
+000082 DD0FE3              A   163    	LD	(IX+%FFFFFFE3),BC
+000085 DD77E6              A   164    	LD	(IX+%FFFFFFE6),A
+000088 AF                  A   165    	XOR	A,A
+000089 DD0FF5              A   166    	LD	(IX+%FFFFFFF5),BC
+00008C DD77F8              A   167    	LD	(IX+%FFFFFFF8),A
+00008F AF                  A   168    	XOR	A,A
+000090 DD0FF1              A   169    	LD	(IX+%FFFFFFF1),BC
+000093 DD77F4              A   170    	LD	(IX+%FFFFFFF4),A
+                           A   171    ;   87				while ((x2 + y2 < 4) && ite
+000096 C3 30 01 00         A   172    	JR	L_4
+00009A                     A   173    L_5:
+                           A   174    ;   88					{
+                           A   175    ;   89					a = x2 - y2 + x0;
+00009A DD27F5              A   176    	LD	HL,(IX+%FFFFFFF5)
+00009D DD5EF8              A   177    	LD	E,(IX+%FFFFFFF8)
+0000A0 DD07F1              A   178    	LD	BC,(IX+%FFFFFFF1)
+0000A3 DD7EF4              A   179    	LD	A,(IX+%FFFFFFF4)
+0000A6 CD 00 00 00         A   180    	CALL	__fsub
+0000AA DD27DB              A   181    	LD	HL,(IX+%FFFFFFDB)
+0000AD DD5EDE              A   182    	LD	E,(IX+%FFFFFFDE)
+0000B0 CD 00 00 00         A   183    	CALL	__fadd
+0000B4 DD0FE7              A   184    	LD	(IX+%FFFFFFE7),BC
+0000B7 DD77EA              A   185    	LD	(IX+%FFFFFFEA),A
+                           A   186    ;   90					b = w - x2 - y2 + y0;
+0000BA DD27F1              A   187    	LD	HL,(IX+%FFFFFFF1)
+0000BD DD5EF4              A   188    	LD	E,(IX+%FFFFFFF4)
+0000C0 DD07E3              A   189    	LD	BC,(IX+%FFFFFFE3)
+0000C3 DD7EE6              A   190    	LD	A,(IX+%FFFFFFE6)
+0000C6 CD 00 00 00         A   191    	CALL	__fsub
+0000CA DD27F5              A   192    	LD	HL,(IX+%FFFFFFF5)
+0000CD DD5EF8              A   193    	LD	E,(IX+%FFFFFFF8)
+0000D0 CD 00 00 00         A   194    	CALL	__fsub
+0000D4 DD27DF              A   195    	LD	HL,(IX+%FFFFFFDF)
+0000D7 DD5EE2              A   196    	LD	E,(IX+%FFFFFFE2)
+0000DA CD 00 00 00         A   197    	CALL	__fadd
+0000DE DD0FEB              A   198    	LD	(IX+%FFFFFFEB),BC
+0000E1 DD77EE              A   199    	LD	(IX+%FFFFFFEE),A
+                           A   200    ;   91					x2 = a * a;
+0000E4 DD27E7              A   201    	LD	HL,(IX+%FFFFFFE7)
+0000E7 DD5EEA              A   202    	LD	E,(IX+%FFFFFFEA)
+0000EA DD07E7              A   203    	LD	BC,(IX+%FFFFFFE7)
+0000ED DD7EEA              A   204    	LD	A,(IX+%FFFFFFEA)
+0000F0 CD 00 00 00         A   205    	CALL	__fmul
+0000F4 DD0FF1              A   206    	LD	(IX+%FFFFFFF1),BC
+0000F7 DD77F4              A   207    	LD	(IX+%FFFFFFF4),A
+                           A   208    ;   92					y2 = b * b;
+0000FA DD27EB              A   209    	LD	HL,(IX+%FFFFFFEB)
+0000FD DD5EEE              A   210    	LD	E,(IX+%FFFFFFEE)
+000100 DD07EB              A   211    	LD	BC,(IX+%FFFFFFEB)
+000103 DD7EEE              A   212    	LD	A,(IX+%FFFFFFEE)
+000106 CD 00 00 00         A   213    	CALL	__fmul
+00010A DD0FF5              A   214    	LD	(IX+%FFFFFFF5),BC
+00010D DD77F8              A   215    	LD	(IX+%FFFFFFF8),A
+                           A   216    ;   93					w = (a + b) * (a + b);
+000110 DD27EB              A   217    	LD	HL,(IX+%FFFFFFEB)
+000113 DD5EEE              A   218    	LD	E,(IX+%FFFFFFEE)
+000116 DD07E7              A   219    	LD	BC,(IX+%FFFFFFE7)
+000119 DD7EEA              A   220    	LD	A,(IX+%FFFFFFEA)
+00011C CD 00 00 00         A   221    	CALL	__fadd
+000120 5F                  A   222    	LD	E,A
+000121 C5E1                A   223    	LD	HL,BC
+000123 CD 00 00 00         A   224    	CALL	__fmul
+000127 DD0FE3              A   225    	LD	(IX+%FFFFFFE3),BC
+00012A DD77E6              A   226    	LD	(IX+%FFFFFFE6),A
+                           A   227    ;   94					iteration++;
+00012D DD34F9              A   228    	INC	(IX+%FFFFFFF9)
+                           A   229    ;   95					}
+000130                     A   230    L_4:
+000130 DD27F5              A   231    	LD	HL,(IX+%FFFFFFF5)
+000133 DD5EF8              A   232    	LD	E,(IX+%FFFFFFF8)
+000136 DD07F1              A   233    	LD	BC,(IX+%FFFFFFF1)
+000139 DD7EF4              A   234    	LD	A,(IX+%FFFFFFF4)
+00013C CD 00 00 00         A   235    	CALL	__fadd
+000140 5F                  A   236    	LD	E,A
+000141 C5E1                A   237    	LD	HL,BC
+000143 01000080            A   238    	LD	BC,8388608
+000147 3E40                A   239    	LD	A,%40
+000149 CD 00 00 00         A   240    	CALL	__fcmp
+00014D F2 5A 01 00         A   241    	JP	P,L_6
+000151 DD7EF9              A   242    	LD	A,(IX+%FFFFFFF9)
+000154 FE10                A   243    	CP	A,%10
+000156 DA 9A 00 00         A   244    	JR	C,L_5
+00015A                     A   245    L_6:
+                           A   246    ;   96				shade = (iteration & 0x07);
+00015A DD7EF9              A   247    	LD	A,(IX+%FFFFFFF9)
+00015D E607                A   248    	AND	A,%7
+00015F DD77F0              A   249    	LD	(IX+%FFFFFFF0),A
+                           A   250    ;   97				vdp_plotColour(colours[shad
+000162 B7ED62              A   251    	UEXT	HL
+000165 6F                  A   252    	LD	L,A
+000166 E5C1                A   253    	LD	BC,HL
+000168 29                  A   254    	ADD	HL,HL
+000169 09                  A   255    	ADD	HL,BC
+00016A 01 00 00 00         A   256    	LD	BC,_colours
+00016E 09                  A   257    	ADD	HL,BC
+00016F DD2FD8              A   258    	LD	(IX+%FFFFFFD8),HL
+000172 DD31D8              A   259    	LD	IY,(IX+%FFFFFFD8)
+000175 FD4E02              A   260    	LD	C,(IY+%2)
+000178 0600                A   261    	LD	B,%0
+00017A C5                  A   262    	PUSH	BC
+00017B FD4E01              A   263    	LD	C,(IY+%1)
+00017E C5                  A   264    	PUSH	BC
+00017F FD4E00              A   265    	LD	C,(IY+%0)
+000182 C5                  A   266    	PUSH	BC
+000183 DD77D7              A   267    	LD	(IX+%FFFFFFD7),A
+000186 CD 00 00 00         A   268    	CALL	_vdp_plotColour
+00018A DD7ED7              A   269    	LD	A,(IX+%FFFFFFD7)
+00018D C1                  A   270    	POP	BC
+00018E C1                  A   271    	POP	BC
+00018F C1                  A   272    	POP	BC
+                           A   273    ;   98				vdp_plotPoint(x, y);
+000190 DD07FD              A   274    	LD	BC,(IX+%FFFFFFFD)
+000193 C5                  A   275    	PUSH	BC
+000194 DD07FA              A   276    	LD	BC,(IX+%FFFFFFFA)
+000197 C5                  A   277    	PUSH	BC
+000198 DD77D7              A   278    	LD	(IX+%FFFFFFD7),A
+00019B CD 00 00 00         A   279    	CALL	_vdp_plotPoint
+00019F DD7ED7              A   280    	LD	A,(IX+%FFFFFFD7)
+0001A2 C1                  A   281    	POP	BC
+0001A3 C1                  A   282    	POP	BC
+                           A   283    ;   99				vdp_plotPoint(x, 199 - y);
+0001A4 21C70000            A   284    	LD	HL,199
+0001A8 DD07FD              A   285    	LD	BC,(IX+%FFFFFFFD)
+0001AB B7                  A   286    	OR	A,A
+0001AC ED42                A   287    	SBC	HL,BC
+0001AE E5                  A   288    	PUSH	HL
+0001AF DD07FA              A   289    	LD	BC,(IX+%FFFFFFFA)
+0001B2 C5                  A   290    	PUSH	BC
+0001B3 CD 00 00 00         A   291    	CALL	_vdp_plotPoint
+0001B7 C1                  A   292    	POP	BC
+0001B8 C1                  A   293    	POP	BC
+                           A   294    ;  100					
+                           A   295    ;  101				//keycode = getsysvar8bit(s
+                           A   296    ;  102				//keycode = getch();
+                           A   297    ;  103				//printf("%d\n\r", keycode)
+                           A   298    ;  104				//if (27 == keycode)
+                           A   299    ;  105				//	break;
+                           A   300    ;  106				keycode = getkeycode();
+0001B9 CD 00 00 00         A   301    	CALL	_getkeycode
+0001BD DD77EF              A   302    	LD	(IX+%FFFFFFEF),A
+                           A   303    ;  107				//printf("%d\n\r", k);
+                           A   304    ;  108				//if (27 == k)
+                           A   305    ;  109				if (keycode != 0)
+0001C0 B7                  A   306    	OR	A,A
+0001C1 28 09               A   307    	JR	Z,L_9
+                           A   308    ;  110					{
+                           A   309    ;  111					y = SCREEN_HEIGHT;
+0001C3 01C80000            A   310    	LD	BC,200
+0001C7 DD0FFD              A   311    	LD	(IX+%FFFFFFFD),BC
+                           A   312    ;  112					break;
+0001CA 18 15               A   313    	JR	L_12
+                           A   314    ;  113					}
+                           A   315    ;  114				}
+0001CC                     A   316    L_9:
+0001CC DD07FA              A   317    	LD	BC,(IX+%FFFFFFFA)
+0001CF 03                  A   318    	INC	BC
+0001D0 DD0FFA              A   319    	LD	(IX+%FFFFFFFA),BC
+0001D3                     A   320    L_10:
+0001D3 01400100            A   321    	LD	BC,320
+0001D7 DD27FA              A   322    	LD	HL,(IX+%FFFFFFFA)
+0001DA B7                  A   323    	OR	A,A
+0001DB ED42                A   324    	SBC	HL,BC
+0001DD FA 4E 00 00         A   325    	JP	M,L_8
+                           A   326    ;  115			}
+0001E1                     A   327    L_12:
+0001E1 DD07FD              A   328    	LD	BC,(IX+%FFFFFFFD)
+0001E4 03                  A   329    	INC	BC
+0001E5 DD0FFD              A   330    	LD	(IX+%FFFFFFFD),BC
+0001E8                     A   331    L_13:
+0001E8 01640000            A   332    	LD	BC,100
+0001EC DD27FD              A   333    	LD	HL,(IX+%FFFFFFFD)
+0001EF B7                  A   334    	OR	A,A
+0001F0 ED42                A   335    	SBC	HL,BC
+0001F2 FA FC 01 00         A   336    	JP	M,L__5
+0001F6 EA 25 00 00         A   337    	JP	PE,L_11
+0001FA 18 04               A   338    	JR	L__6
+0001FC                     A   339    L__5:
+0001FC E2 25 00 00         A   340    	JP	PO,L_11
+000200                     A   341    L__6:
+                           A   342    ;  116		
+                           A   343    ;  117		vdp_cursorEnable();
+000200 CD 00 00 00         A   344    	CALL	_vdp_cursorEnable
+000204 B7                  A   345    	OR	A,A
+                           A   346    ;  118		
+                           A   347    ;  119		//vdp_mode(0);
+                           A   348    ;  120		//vdp_cls();
+                           A   349    ;  121		
+                           A   350    ;  122		return 0;
+000205 ED62                A   351    	SBC	HL,HL
+000207 DDF9                A   352    	LD	SP,IX
+000209 DDE1                A   353    	POP	IX
+00020B C9                  A   354    	RET	
+                           A   355    
+                           A   356    
+                           A   357    ;**************************** _main ***********
+                           A   358    ;Name                         Addr/Register   S
+                           A   359    ;_vdp_cursorEnable                   IMPORT  --
+                           A   360    ;_getkeycode                         IMPORT  --
+                           A   361    ;_vdp_plotPoint                      IMPORT  --
+                           A   362    ;_vdp_plotColour                     IMPORT  --
+                           A   363    ;_colours                            STATIC    
+                           A   364    ;_vdp_cls                            IMPORT  --
+                           A   365    ;_vdp_cursorDisable                  IMPORT  --
+                           A   366    ;_vdp_mode                           IMPORT  --
+                           A   367    ;x0                                   IX-37    
+                           A   368    ;y0                                   IX-33    
+                           A   369    ;w                                    IX-29    
+                           A   370    ;a                                    IX-25    
+                           A   371    ;b                                    IX-21    
+                           A   372    ;keycode                              IX-17    
+                           A   373    ;shade                                IX-16    
+                           A   374    ;x2                                   IX-15    
+                           A   375    ;y2                                   IX-11    
+                           A   376    ;iteration                             IX-7    
+                           A   377    ;x                                     IX-6    
+                           A   378    ;y                                     IX-3    
+                           A   379    ;argv                                  IX+9    
+                           A   380    ;argc                                  IX+6    
+                           A   381    
+                           A   382    
+                           A   383    ; Stack Frame Size: 53 (bytes)
+                           A   384    ;       Spill Code: 0 (instruction)
+                           A   385    
+                           A   386    
+                           A   387    	XREF _vdp_plotPoint:ROM
+                           A   388    	XREF _vdp_plotColour:ROM
+                           A   389    	XREF _vdp_cursorEnable:ROM
+                           A   390    	XREF _vdp_cursorDisable:ROM
+                           A   391    	XREF _vdp_cls:ROM
+                           A   392    	XREF _vdp_mode:ROM
+                           A   393    	XREF _getkeycode:ROM
+                           A   394    	XREF __fadd:ROM
+                           A   395    	XREF __fsub:ROM
+                           A   396    	XREF __fmul:ROM
+                           A   397    	XREF __fdiv:ROM
+                           A   398    	XREF __fcmp:ROM
+                           A   399    	XREF __ltof:ROM
+                           A   400    	XREF __itol:ROM
+                           A   401    	XREF __frameset:ROM
+                           A   402    	XDEF _main
+                           A   403    	XDEF _colours
+                           A   404    	END
 
 
 Errors: 0
 Warnings: 0
-Lines Assembled: 300
+Lines Assembled: 405

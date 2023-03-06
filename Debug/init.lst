@@ -1,4 +1,4 @@
-Zilog eZ80 Macro Assembler Version 4.3 (19073001) RELISTED06-Mar-23     12:35:48     page:   1
+Zilog eZ80 Macro Assembler Version 4.3 (19073001) RELISTED06-Mar-23     10:19:13     page:   1
 
 
 PC     Object              I  Line    Source 
@@ -61,7 +61,7 @@ PC     Object              I  Line    Source
 040057 CD 78 00 04         A    56    			CALL	_clear_bss
 04005B E1                  A    57    			POP	HL
                            A    58    ;
-04005C DD21 A2 12 04       A    59    			LD	IX, argv_ptrs		; The argv 
+04005C DD21 AB 12 04       A    59    			LD	IX, argv_ptrs		; The argv 
 040061 DDE5                A    60    			PUSH	IX			; Parameter 2: 
 040063 CD 97 00 04         A    61    			CALL	_parse_params		; Parse
 040067 0600                A    62    			LD	B, 0			; Clear B from 
@@ -196,14 +196,14 @@ PC     Object              I  Line    Source
                            A   191    
                            A   192    ; Storage for the argv array pointers
                            A   193    ;
-0412A2 000000 000000       A   194    argv_ptrs:		BLKP	argv_ptrs_max, 0
-0412A8 000000 000000 
-0412AE 000000 000000 
-0412B4 000000 000000 
-0412BA 000000 000000 
-0412C0 000000 000000 
-0412C6 000000 000000 
-0412CC 000000 000000 
+0412AB 000000 000000       A   194    argv_ptrs:		BLKP	argv_ptrs_max, 0
+0412B1 000000 000000 
+0412B7 000000 000000 
+0412BD 000000 000000 
+0412C3 000000 000000 
+0412C9 000000 000000 
+0412CF 000000 000000 
+0412D5 000000 000000 
                            A   195    			
                            A   196    			END
 
