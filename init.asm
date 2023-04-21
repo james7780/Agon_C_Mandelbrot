@@ -1,5 +1,5 @@
 ;
-; Title:	init.asm - Initialisation Code
+; Title:	Hello World - Initialisation Code
 ; Author:	Dean Belfield
 ; Created:	22/11/2022
 ; Last Updated: 25/11/2022
@@ -33,7 +33,7 @@ argv_ptrs_max:		EQU	16			; Maximum number of arguments allowed in argv
 ;
 ; The header stuff
 ;
-;_exec_name:		DB	"MBROT.BIN", 0		; The executable name, only used in argv
+;_exec_name:		DB	"CRITTERS.BIN", 0		; The executable name, only used in argv
 
 			ALIGN	64			; The executable header is from byte 64 onwards
 			
@@ -41,7 +41,7 @@ argv_ptrs_max:		EQU	16			; Maximum number of arguments allowed in argv
 			DB	00h			; MOS header version 0
 			DB	01h			; Flag for run mode (0: Z80, 1: ADL)
 
-_exec_name:		DB	"MBROT.BIN", 0		; The executable name, only used in argv
+_exec_name:		DB	"CRITTERS.BIN", 0		; The executable name, only used in argv
 
 ;
 ; And the code follows on immediately after the header

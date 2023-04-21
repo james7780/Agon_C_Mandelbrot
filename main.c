@@ -2,9 +2,10 @@
  * Title:			C MAndelbrot example for Agon Light
  * Author:			James Higgs (Jum Hig)
  * Created:			2023
- * Last Updated:		2023-03-06
+ * Last Updated:		2023-04-21
  *
- * Modinfo:
+ * Revisions:
+ * 2023-04-21 - Updated to MOS 1.03
  */
  
 #include <stdio.h>
@@ -13,27 +14,8 @@
 #include "vdp.h"
 
 #define MAX_ITERATION	16	//20
-#define SCREEN_WIDTH	512
-#define SCREEN_HEIGHT	384
-
-struct RGB_t
-{
-	UINT8 r;
-	UINT8 g;
-	UINT8 b;
-};
-
-// Colours for the mandlebrot shading
-struct RGB_t colours[8] = {
-	 { 0,   0,   0   },
-	 { 0,   0,   255 },
-	 { 0,   255, 0   },
-	 { 0,   255, 255 },
-	 { 255, 0,   0   },
-	 { 255, 0,   255 },
-	 { 255, 255, 0   },
-	 { 255, 0,   255 }	
-};
+#define SCREEN_WIDTH	1024
+#define SCREEN_HEIGHT	1024
 
 /// @param[in] argc			Argument count
 /// @param[in] argv			Pointer to the argument string - zero terminated, parameters separated by spaces
@@ -59,15 +41,21 @@ int main(int argc, char * argv[]) {
 	for(i = 0; i < argc; i++) {
 		printf("- argv[%d]: %s\n\r", i, argv[i]);
 	} */
+	
+	printf("Screen width: %d\n\r", SCREEN_WIDTH);
+	printf("Screen height: %d\n\r", SCREEN_HEIGHT);
 
-	for (y = 0; y < SCREEN_HEIGHT / 2; y++)
+	// Wait for key release
+	while (getsysvar_vkeydown() != 0) { };
+
+	for (y = 0; y < SCREEN_HEIGHT / 2; y += 2)
 		{
 		// Scale y coord to mandel set { -1.12 ... +1.12)
-		y0 = (y - (SCREEN_HEIGHT / 2)) / 150.0;				// 200 / 2 / 1.12
-		for (x = 0; x < SCREEN_WIDTH; x++)
+		y0 = (y - (SCREEN_HEIGHT / 2)) / 300.0;				// 200 / 2 / 1.12
+		for (x = 0; x < SCREEN_WIDTH; x += 2)
 			{
 			// Scale x coord to mandel set { -2.50 ... 0.0 } 
-			x0 = (x - (SCREEN_WIDTH / 2)) / 150.0 - 0.5;			// TODO - Fix!
+			x0 = (x - (SCREEN_WIDTH / 2)) / 300.0 - 0.5;			// TODO - Fix!
 
 			// Do mandel iteration
 			iteration = 0;
@@ -94,20 +82,15 @@ int main(int argc, char * argv[]) {
 				iteration++;
 				}
 			shade = (iteration & 0x07);
-			vdp_plotColour(colours[shade].r, colours[shade].g, colours[shade].b);
+			vdp_plotColour(shade);			// palette colour index
 			vdp_plotPoint(x, y);
-			vdp_plotPoint(x, 383 - y);
+			vdp_plotPoint(x, SCREEN_HEIGHT - y - 1);
 				
-			//keycode = getsysvar8bit(sysvar_keycode);
-			//keycode = getch();
+			keycode = getsysvar_vkeydown();
 			//printf("%d\n\r", keycode);
-			//if (27 == keycode)
-			//	break;
-			keycode = getkeycode();
-			//printf("%d\n\r", k);
-			//if (27 == k)
 			if (keycode != 0)
 				{
+				printf("Key pressed1\n\r");
 				y = SCREEN_HEIGHT;
 				break;
 				}
@@ -115,9 +98,6 @@ int main(int argc, char * argv[]) {
 		}
 	
 	vdp_cursorEnable();
-	
-	//vdp_mode(0);
-	//vdp_cls();
 	
 	return 0;
 }
