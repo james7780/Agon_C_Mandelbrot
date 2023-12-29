@@ -135,6 +135,7 @@ $(WORKDIR_ESCSPACE)\init.obj :  \
 $(WORKDIR_ESCSPACE)\main.obj :  \
             $(PRJDIR_ESCSPACE)\main.c  \
             $(PRJDIR_ESCSPACE)\mos-interface.h  \
+            $(PRJDIR_ESCSPACE)\stdint.h  \
             $(PRJDIR_ESCSPACE)\vdp.h  \
             $(INCLUDE_ESCSPACE)\std\Format.h  \
             $(INCLUDE_ESCSPACE)\std\Stdarg.h  \
@@ -151,6 +152,8 @@ $(WORKDIR_ESCSPACE)\mos-interface.obj :  \
 $(WORKDIR_ESCSPACE)\vdp.obj :  \
             $(PRJDIR_ESCSPACE)\vdp.c  \
             $(PRJDIR_ESCSPACE)\mos-interface.h  \
+            $(PRJDIR_ESCSPACE)\stdint.h  \
+            $(PRJDIR_ESCSPACE)\vdp.h  \
             $(INCLUDE_ESCSPACE)\zilog\defines.h
 	 $(CC) $(CFLAGS) "$(PRJDIR)\vdp.c"
 
