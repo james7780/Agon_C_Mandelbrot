@@ -2,10 +2,11 @@
  * Title:			C MAndelbrot example for Agon Light
  * Author:			James Higgs (Jum Hig)
  * Created:			2023
- * Last Updated:		2023-04-21
+ * Last Updated:		2023-12-21
  *
  * Revisions:
  * 2023-04-21 - Updated to MOS 1.03
+ * 2023-12-21 - Updated to MOS 1.04
  */
  
 #include <stdio.h>
@@ -13,9 +14,9 @@
 #include "mos-interface.h"
 #include "vdp.h"
 
-#define MAX_ITERATION	16	//20
-#define SCREEN_WIDTH	1024
-#define SCREEN_HEIGHT	1024
+#define MAX_ITERATION	16		//20
+#define SCREEN_WIDTH		640		//1024
+#define SCREEN_HEIGHT	480		//1024
 
 /// @param[in] argc			Argument count
 /// @param[in] argv			Pointer to the argument string - zero terminated, parameters separated by spaces
@@ -29,10 +30,11 @@ int main(int argc, char * argv[]) {
 	UINT8 shade;
 	UINT8 keycode;
 	
-	// Set to 512x384 mode
-	vdp_mode(1);
+	// Set video mode
+	vdp_mode(VDPMODE_640x480_16C);	//1); was 512 x 384 in MOS 1.03
 	vdp_cursorDisable();
 	vdp_cls();
+	vdp_setLogicalCoords(0);				// turn off BBC illogical coords
 	
 /* 	printf("Hello World\n\r");
 	printf("Arguments:\n\r");
@@ -48,11 +50,11 @@ int main(int argc, char * argv[]) {
 	// Wait for key release
 	while (getsysvar_vkeydown() != 0) { };
 
-	for (y = 0; y < SCREEN_HEIGHT / 2; y += 2)
+	for (y = 0; y < SCREEN_HEIGHT / 2; y++)
 		{
 		// Scale y coord to mandel set { -1.12 ... +1.12)
 		y0 = (y - (SCREEN_HEIGHT / 2)) / 300.0;				// 200 / 2 / 1.12
-		for (x = 0; x < SCREEN_WIDTH; x += 2)
+		for (x = 0; x < SCREEN_WIDTH; x++)
 			{
 			// Scale x coord to mandel set { -2.50 ... 0.0 } 
 			x0 = (x - (SCREEN_WIDTH / 2)) / 300.0 - 0.5;			// TODO - Fix!
@@ -86,11 +88,11 @@ int main(int argc, char * argv[]) {
 			vdp_plotPoint(x, y);
 			vdp_plotPoint(x, SCREEN_HEIGHT - y - 1);
 				
-			keycode = getsysvar_vkeydown();
+			keycode = getsysvar_keyascii();
 			//printf("%d\n\r", keycode);
-			if (keycode != 0)
+			if (27 == keycode)
 				{
-				printf("Key pressed1\n\r");
+				printf("Esc key pressed!\n\r");
 				y = SCREEN_HEIGHT;
 				break;
 				}
